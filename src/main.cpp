@@ -195,7 +195,10 @@ void exercicio3()
 
 
 int main() {
-
+	int test;
+	cout<<"ola"<<endl;
+	cin>>test;
+	cout<<endl<<test<<endl;
 	exercicio1();
 	//exercicio2();
 	//exercicio3();
