@@ -9,7 +9,7 @@
 #include <list>
 #include <limits>
 #include <cmath>
-#include "MutablePriorityQueue.h"
+
 
 using namespace std;
 
@@ -40,7 +40,6 @@ public:
 	double getDist() const;
 	Vertex *getPath() const;
 	friend class Graph<T>;
-	friend class MutablePriorityQueue<Vertex<T>>;
 };
 
 
@@ -105,17 +104,6 @@ public:
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
 
-	// Fp05 - single source
-	void dijkstraShortestPath(const T &s);
-	void dijkstraShortestPathOld(const T &s);
-	void unweightedShortestPath(const T &s);
-	void bellmanFordShortestPath(const T &s);
-	vector<T> getPath(const T &origin, const T &dest) const;
-
-	// Fp05 - all pairs
-	void floydWarshallShortestPath();
-	vector<T> getfloydWarshallPath(const T &origin, const T &dest) const;
-
 };
 
 template <class T>
@@ -166,45 +154,4 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	return true;
 }
 
-
-/**************** Single Source Shortest Path algorithms ************/
-
-template<class T>
-void Graph<T>::dijkstraShortestPath(const T &origin) {
-	// TODO
-}
-
-template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest) const{
-	vector<T> res;
-	// TODO
-	return res;
-}
-
-template<class T>
-void Graph<T>::unweightedShortestPath(const T &orig) {
-	// TODO
-}
-
-template<class T>
-void Graph<T>::bellmanFordShortestPath(const T &orig) {
-	// TODO
-}
-
-
-/**************** All Pairs Shortest Path  ***************/
-
-template<class T>
-void Graph<T>::floydWarshallShortestPath() {
-	// TODO
-}
-
-template<class T>
-vector<T> Graph<T>::getfloydWarshallPath(const T &orig, const T &dest) const{
-	vector<T> res;
-	// TODO
-	return res;
-}
-
-
-#endif /* GRAPH_H_ */
+#endif

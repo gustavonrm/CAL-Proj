@@ -12,16 +12,21 @@
 #include <iomanip>
 #include<string>
 
+#include "Map.h"
+
 using namespace std;
 
 class Menu {
 private:
 	int option;
-	string mapFile, trucksFile, itemsFile;
+	string mapFolder, trucksFile, itemsFile;
+	Map map;
 public:
-	void menu(){};
+	Menu();
 	bool menuManip();
 	void drawMainMenu();
+	void readFiles();
+	void loadFiles();
 	void readInput();
 
 };

@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "graphviewer.h"
-#include "menu.h"
+#include "Menu.h"
 
 void graphviewer_sample();
 
@@ -45,10 +45,8 @@ void graphviewer_sample()
 
 int main() {
 	Menu menu;
-	if(menu.menuManip()){
-		cout<<"...ended";
+	cout<<"end";
 		return 0;
-	}
 	/*
 	graphviewer_sample();
 	getchar();
