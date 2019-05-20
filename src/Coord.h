@@ -17,6 +17,7 @@ class Coord {
 private:
 	int id;
 	double lat,lon,x,y;
+
 public:
 	Coord();
 	Coord(int id);
@@ -34,6 +35,7 @@ public:
 	void setY(double y);
 
 	bool operator == (const Coord &c) const;
+
 };
 
 #endif /* COORD_H_ */

@@ -97,7 +97,6 @@ void Map::processEdges(){
 			line.clear();
 			pair<int,int> edge(stoi(src),stoi(dest));
 			this->edges.push_back(edge);
-			cout<<src<<endl<<dest<<endl;
 			}
 		}
 	}
@@ -105,26 +104,32 @@ void Map::processGraph(){
 	for(auto v : this->nodes){
 		this->graph.addVertex(v);
 	}
+	cout<<"processed vertex"<<endl;;
 	for(auto e : this->edges){
 		int srcId = e.first;
 		int destId = e.second;
-		Vertex<Coord>* src ,* dest;
-		int i=0;
-		for(auto v : this->graph.getVertexSet()){
-			if(v->getInfo().getId() == srcId){
-				src=v;
-				i++;
+		Coord src ;
+		Coord dest;
+		//TODO use binary search
+		cout<<"edge"<<endl;
+		for(auto n : nodes){
+			cout<<"oi"<<endl;
+			if(n.getId() == srcId){
+				cout<<"found src"<<endl;
+				src=n;
 			}
-			if(v->getInfo().getId() == destId){
-				dest=v;
-				i++;
+			if(n.getId() == destId){
+				cout<<"found dest"<<endl;
+				dest=n;
 			}
-			if(i == 2){
+			if(dest.getId() != 0 && src.getId() != 0 ){
+				cout<<"break"<<endl;
 				break;
 			}
 		}
-		this->graph.addEdge(&src&,dest,0);
+		this->graph.addEdge(src,dest,0);
 		//TODO check weight
+		cout<< e.first<<endl;
 	}
 }
 void drawGraph(){
