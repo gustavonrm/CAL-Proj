@@ -9,7 +9,9 @@
 #define MAP_H_
 
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
 
 #include "graph.h"
 #include "Coord.h"
@@ -18,6 +20,7 @@ using namespace std;
 
 class Map {
 private:
+	vector<Coord> nodes;
 	Graph<Coord> graph;
 	string folder;
 	string edgesFile, nodesLatLonFile, nodesXYFile, tagsFile;
@@ -26,6 +29,8 @@ public:
 	void setFolder(string folder);
 	int loadMap();
 	void processFiles();
+	void processNodesLatLon();
+	void processNodesXY();
 };
 
 #endif /* MAP_H_ */

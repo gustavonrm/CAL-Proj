@@ -10,18 +10,20 @@ void graphviewer_sample();
 
 void graphviewer_sample()
 {
-	GraphViewer *gv = new GraphViewer(600, 600, true);
+	GraphViewer *gv = new GraphViewer(1920, 1024, true);
 
 	gv->setBackground("panquecas.jpg");
 
 	//window configs
-	gv->createWindow(600, 600);
+	gv->createWindow(1920, 1024);
 	gv->defineVertexColor("blue");
 	gv->defineEdgeColor("black");
 
 	//add stuff
 	gv->addNode(0);
 	gv->addNode(1);
+	gv->addNode(2);
+	gv->addNode(3);
 	gv->addEdge(0,0,1,EdgeType::DIRECTED);
 
 	gv->rearrange(); //NEEDED TO APPLY NEW INFO
@@ -44,11 +46,12 @@ void graphviewer_sample()
 
 
 int main() {
+
 	Menu menu;
 	cout<<"end";
 		return 0;
 	/*
 	graphviewer_sample();
 	getchar();
-	*/
+*/
 }

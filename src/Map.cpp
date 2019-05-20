@@ -15,7 +15,8 @@ void Map::setFolder(string folder){
 }
 int Map::loadMap(){
 	this->processFiles();
-	//processGraph
+	this->processNodesLatLon();
+	this->processNodesXY();
 }
 
 void Map::processFiles(){
@@ -27,3 +28,52 @@ void Map::processFiles(){
 	this->tagsFile=folder+"/T04_tags_"+cityName+".txt";
 }
 
+void Map::processNodesLatLon(){
+	ifstream file;
+	string line;
+	string nodes;
+	file.open(this->nodesLatLonFile);
+	if(file.is_open()){
+		getline(file,nodes);
+		while(getline(file,line)){
+			//read values
+			string id, lat, lon;
+			line.erase(0,1);
+			id=line.substr(0,line.find(','));
+			line.erase(0,line.find(',')+2);
+			lat=line.substr(0,line.find(','));
+			line.erase(0,line.find(',')+2);
+			lon=line.substr(0,line.find(')'));
+			line.clear();
+			Coord c(stod(id),stod(lat),stod(lon));
+			this->nodes.push_back(c);
+		}
+	}
+}
+void Map::processNodesXY(){
+	ifstream file;
+	string line;
+	string nodes;
+	file.open(this->nodesXYFile);
+	if(file.is_open()){
+		getline(file,nodes);
+		while(getline(file,line)){
+			//read values
+			string id, x, y;
+			line.erase(0,1);
+			id=line.substr(0,line.find(','));
+			line.erase(0,line.find(',')+2);
+			x=line.substr(0,line.find(','));
+			line.erase(0,line.find(',')+2);
+			y=line.substr(0,line.find(')'));
+			line.clear();
+			for(auto v : this->nodes){
+				if(stoi(id) == v.getId()){ //TODO use another algo to imprvs search
+					v.setX(stod(x));
+					v.setY(stod(y));
+					break;
+				}
+			}
+		}
+	}
+}

@@ -15,11 +15,25 @@ using namespace std;
 
 class Coord {
 private:
-	int lat,lon,x,y;
+	int id;
+	double lat,lon,x,y;
 public:
 	Coord();
-	Coord(int lat, int lon);
-	Coord(int lat, int lon,int x, int y);
+	Coord(int id);
+	Coord(int id,double lat, double lon);
+	Coord(int id,double lat, double lon,double x, double y);
+	int getId();
+	double getLat();
+	double getLon();
+	double getX();
+	double getY();
+	void setId(int id);
+	void setLat(double lat);
+	void setLon(double lon);
+	void setX(double x);
+	void setY(double y);
+
+	bool operator == (const Coord &c) const;
 
 };
 
