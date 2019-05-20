@@ -108,7 +108,7 @@ void Map::processGraph(){
 	for(auto e : this->edges){
 		int srcId = e.first;
 		int destId = e.second;
-		Vertex<Coord>* src , dest;
+		Vertex<Coord>* src ,* dest;
 		int i=0;
 		for(auto v : this->graph.getVertexSet()){
 			if(v->getInfo().getId() == srcId){
@@ -123,7 +123,8 @@ void Map::processGraph(){
 				break;
 			}
 		}
-		this->graph.addEdge(&src&,dest,0); //TODO check weight
+		this->graph.addEdge(&src&,dest,0);
+		//TODO check weight
 	}
 }
 void drawGraph(){
