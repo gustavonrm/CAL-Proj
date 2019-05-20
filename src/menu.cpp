@@ -10,7 +10,7 @@
 Menu::Menu(){
 	this->option = 0;
 	 this->readFiles();
-	 this->loadFiles();
+	 this->company.init(this->mapFolder,this->trucksFile,this->itemsFile);
 	 this->menuManip();
 }
 	bool Menu::menuManip(){
@@ -19,7 +19,7 @@ Menu::Menu(){
 			this->readInput();
 			switch(this->option){
 					case 0:
-						this->map.drawGraph();
+						this->company.drawMap();
 							break;
 					case 1:
 							break;
@@ -56,10 +56,6 @@ Menu::Menu(){
 		cin>> this->itemsFile;
 		cout<<endl;
 
-	}
-	void Menu::loadFiles(){
-		this->map.setFolder(this->mapFolder);
-		this->map.loadMap();
 	}
 
 	void Menu::readInput(){

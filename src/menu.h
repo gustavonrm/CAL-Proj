@@ -12,14 +12,14 @@
 #include<string>
 
 #include "Map.h"
-
+#include "Company.h"
 using namespace std;
 
 class Menu {
 private:
 	int option;
 	string mapFolder, trucksFile, itemsFile;
-	Map map;
+	Company company;
 public:
 	Menu();
 	bool menuManip();

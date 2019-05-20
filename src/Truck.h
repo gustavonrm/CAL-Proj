@@ -9,4 +9,24 @@
 #define TRUCK_H_
 
 
+#include <iostream>
+#include<string>
+#include <vector>
+
+#include "Item.h"
+
+using namespace std;
+
+class Truck {
+private:
+	vector<Item> items;
+	double maxWeight;
+	double maxVolume;
+public:
+	Truck(double maxWeight,double maxVolume);
+	void setItems(vector<Item> items);
+	void addItem(Item item);
+
+};
+
 #endif /* TRUCK_H_ */
