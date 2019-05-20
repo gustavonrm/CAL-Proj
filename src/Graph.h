@@ -39,6 +39,7 @@ public:
 	T getInfo() const;
 	double getDist() const;
 	Vertex *getPath() const;
+	vector<Edge<T>>getAdj() const; //used on graphviewer api
 	friend class Graph<T>;
 };
 
@@ -74,6 +75,10 @@ template <class T>
 Vertex<T> *Vertex<T>::getPath() const {
 	return this->path;
 }
+template <class T>
+vector<Edge<T>> Vertex<T>::getAdj() const{
+	return this->adj;
+}
 
 /********************** Edge  ****************************/
 
@@ -83,12 +88,18 @@ class Edge {
 	double weight;         // edge weight
 public:
 	Edge(Vertex<T> *d, double w);
+	Vertex<T> * getDest() const; //used on graph viewer api
 	friend class Graph<T>;
 	friend class Vertex<T>;
 };
 
 template <class T>
 Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w) {}
+
+template <class T>
+Vertex<T> * Edge<T>::getDest() const{
+	return this->dest;
+}
 
 
 /*************************** Graph  **************************/

@@ -36,6 +36,7 @@ void Map::processNodesLatLon(){
 	string nodes;
 	file.open(this->nodesLatLonFile);
 	if(file.is_open()){
+		cout << "Processing nodes(lat,lon)...\n";
 		getline(file,nodes);
 		while(getline(file,line)){
 			//read values
@@ -50,6 +51,9 @@ void Map::processNodesLatLon(){
 			Coord c(stod(id),stod(lat),stod(lon));
 			this->nodes.push_back(c);
 		}
+	}else{
+		cout << "Error opening files!\n";
+		exit(ERR_OP_NODES_LAT_LON_FILE);
 	}
 }
 void Map::processNodesXY(){
@@ -58,6 +62,7 @@ void Map::processNodesXY(){
 	string nodes;
 	file.open(this->nodesXYFile);
 	if(file.is_open()){
+		cout << "Processing nodes(x,y)...\n";
 		getline(file,nodes);
 		while(getline(file,line)){
 			//read values
@@ -77,6 +82,9 @@ void Map::processNodesXY(){
 				}
 			}
 		}
+	}else{
+		cout << "Error opening files!\n";
+		exit(ERR_OP_NODES_X_Y_FILE);
 	}
 }
 
@@ -86,6 +94,7 @@ void Map::processEdges(){
 	string edges;
 	file.open(this->edgesFile);
 	if(file.is_open()){
+		cout << "Processing edges...\n";
 		getline(file,edges);
 		while(getline(file,line)){
 			//read values
@@ -98,13 +107,16 @@ void Map::processEdges(){
 			pair<int,int> edge(stoi(src),stoi(dest));
 			this->edges.push_back(edge);
 			}
+		}else{
+			cout << "Error opening files!\n";
+			exit(ERR_OP_EDGES_FILE);
 		}
 	}
 void Map::processGraph(){
+	cout << "Processing graphviewer...\n";
 	for(auto v : this->nodes){
 		this->graph.addVertex(v);
 	}
-	cout<<"processed vertex"<<endl;;
 	for(auto e : this->edges){
 		int srcId = e.first;
 		int destId = e.second;
@@ -127,7 +139,7 @@ void Map::processGraph(){
 	}
 }
 void Map::drawGraph(){
-	GraphViewer *gv = new GraphViewer(1920, 1080, true);
+	GraphViewer *gv = new GraphViewer(1920, 1920, true);
 	gv->createWindow(1920, 1080);
 	gv->defineVertexColor("black");
 	gv->defineEdgeColor("red");
@@ -136,6 +148,14 @@ void Map::drawGraph(){
 	for(auto n : this->graph.getVertexSet()){
 		gv->addNode(n->getInfo().getId(),n->getInfo().getX(),n->getInfo().getY());
 	}
+	int eId=0;
+	for(auto n : this->graph.getVertexSet()){
+		for(auto e : n->getAdj()){
+			gv->addEdge(eId,n->getInfo().getId(),e.getDest()->getInfo().getId(),EdgeType::UNDIRECTED);
+			eId++;
+		}
+	}
 
+	gv->rearrange();
 	getchar();
 }

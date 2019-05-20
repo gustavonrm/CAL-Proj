@@ -14,10 +14,12 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <cstdlib>
 
 #include "graph.h"
 #include "Coord.h"
 #include "graphviewer.h"
+#include "types.h"
 
 using namespace std;
 
