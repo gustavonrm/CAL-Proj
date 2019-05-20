@@ -19,6 +19,7 @@ Menu::Menu(){
 			this->readInput();
 			switch(this->option){
 					case 0:
+						this->map.drawGraph();
 							break;
 					case 1:
 							break;

@@ -17,6 +17,7 @@
 
 #include "graph.h"
 #include "Coord.h"
+#include "graphviewer.h"
 
 using namespace std;
 

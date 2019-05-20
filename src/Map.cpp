@@ -111,27 +111,31 @@ void Map::processGraph(){
 		Coord src ;
 		Coord dest;
 		//TODO use binary search
-		cout<<"edge"<<endl;
 		for(auto n : nodes){
-			cout<<"oi"<<endl;
 			if(n.getId() == srcId){
-				cout<<"found src"<<endl;
 				src=n;
 			}
 			if(n.getId() == destId){
-				cout<<"found dest"<<endl;
 				dest=n;
 			}
 			if(dest.getId() != 0 && src.getId() != 0 ){
-				cout<<"break"<<endl;
 				break;
 			}
 		}
 		this->graph.addEdge(src,dest,0);
 		//TODO check weight
-		cout<< e.first<<endl;
 	}
 }
-void drawGraph(){
-	//TODO
+void Map::drawGraph(){
+	GraphViewer *gv = new GraphViewer(1920, 1080, true);
+	gv->createWindow(1920, 1080);
+	gv->defineVertexColor("black");
+	gv->defineEdgeColor("red");
+
+	//process vertex
+	for(auto n : this->graph.getVertexSet()){
+		gv->addNode(n->getInfo().getId(),n->getInfo().getX(),n->getInfo().getY());
+	}
+
+	getchar();
 }
