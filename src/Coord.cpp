@@ -8,7 +8,9 @@
 
 #include "Coord.h"
 
-Coord::Coord(){}
+Coord::Coord(){
+	this->id=0;
+}
 Coord::Coord(int id){
 this->id=id;
 }
@@ -56,4 +58,11 @@ void Coord::setY(double y){
 }
 bool Coord::operator == (const Coord &c) const{
 	return(id ==c.id && lat == c.lat && lon == c.lon && x == c.x && y == c.y);
+}
+Coord& Coord::operator = (const Coord &c) const{
+	id=c.id;
+	lat=c.lat;
+	lon=c.lon;
+	x=c.x;
+	y=c.y;
 }

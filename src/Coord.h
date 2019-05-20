@@ -34,6 +34,8 @@ public:
 	void setY(double y);
 
 	bool operator == (const Coord &c) const;
+	Coord& operator = (const Coord &c)const;
+
 
 };
 

@@ -17,6 +17,8 @@ int Map::loadMap(){
 	this->processFiles();
 	this->processNodesLatLon();
 	this->processNodesXY();
+	this->processEdges();
+	this->processGraph();
 }
 
 void Map::processFiles(){
@@ -76,4 +78,54 @@ void Map::processNodesXY(){
 			}
 		}
 	}
+}
+
+void Map::processEdges(){
+	ifstream file;
+	string line;
+	string edges;
+	file.open(this->edgesFile);
+	if(file.is_open()){
+		getline(file,edges);
+		while(getline(file,line)){
+			//read values
+			string src, dest;
+			line.erase(0,1);
+			src=line.substr(0,line.find(','));
+			line.erase(0,line.find(',')+2);
+			dest=line.substr(0,line.find(')'));
+			line.clear();
+			pair<int,int> edge(stoi(src),stoi(dest));
+			this->edges.push_back(edge);
+			cout<<src<<endl<<dest<<endl;
+			}
+		}
+	}
+void Map::processGraph(){
+	for(auto v : this->nodes){
+		this->graph.addVertex(v);
+	}
+	for(auto e : this->edges){
+		int srcId = e.first;
+		int destId = e.second;
+		Vertex<Coord>* src , dest;
+		int i=0;
+		for(auto v : this->graph.getVertexSet()){
+			if(v->getInfo().getId() == srcId){
+				src=v;
+				i++;
+			}
+			if(v->getInfo().getId() == destId){
+				dest=v;
+				i++;
+			}
+			if(i == 2){
+				break;
+			}
+		}
+		this->graph.addEdge(&src&,dest,0); //TODO check weight
+	}
+}
+void drawGraph(){
+	//TODO
 }

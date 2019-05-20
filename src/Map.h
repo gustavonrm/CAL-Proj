@@ -12,6 +12,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "graph.h"
 #include "Coord.h"
@@ -20,6 +21,7 @@ using namespace std;
 
 class Map {
 private:
+	vector<pair<int,int>> edges;
 	vector<Coord> nodes;
 	Graph<Coord> graph;
 	string folder;
@@ -31,6 +33,10 @@ public:
 	void processFiles();
 	void processNodesLatLon();
 	void processNodesXY();
+	void processEdges();
+	void processGraph();
+	void drawGraph();
+	//TODO algorithm to look for edges
 };
 
 #endif /* MAP_H_ */
