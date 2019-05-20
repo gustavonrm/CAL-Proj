@@ -50,9 +50,9 @@ Menu::Menu(){
 	void Menu::readFiles(){
 		cout << "Insert the map that you wish to read: ";
 		cin >> this->mapFolder;
-		cout << endl << "Insert the trucks to make the transportation: ";
+		cout << "Insert the trucks to make the transportation: ";
 		cin>> this->trucksFile;
-		cout << endl << "Insert the items to deliver: ";
+		cout << "Insert the items to deliver: ";
 		cin>> this->itemsFile;
 		cout<<endl;
 
