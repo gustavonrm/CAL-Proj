@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include<string>
+#include <cstdlib>
 
 #include "Map.h"
 #include "Company.h"

@@ -16,6 +16,7 @@
 #include "Map.h"
 #include "Truck.h"
 #include "Item.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ public:
 	Company();
 	void init(string mapFolder, string truckFile, string itemFile);
 	void setMainMap(Map main_map);
+	void processMap();
 	void drawMap();
 };
 

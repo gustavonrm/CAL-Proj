@@ -13,6 +13,8 @@ Company::Company(){
 void Company::init(string mapFolder, string truckFile, string itemFile){
 	this->main_map.setFolder(mapFolder);
 	this->main_map.loadMap();
+	this->Trucks= loadTrucks(truckFile);
+	this->items=loadItems(itemFile);
 }
 void Company::setMainMap(Map main_map){
 	this->main_map=main_map;

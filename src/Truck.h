@@ -26,7 +26,6 @@ public:
 	Truck(double maxWeight,double maxVolume);
 	void setItems(vector<Item> items);
 	void addItem(Item item);
-
 };
 
 #endif /* TRUCK_H_ */

@@ -18,4 +18,3 @@ void Truck::addItem(Item item){
 	this->items.push_back(item);
 }
 
-

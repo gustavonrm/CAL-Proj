@@ -138,9 +138,7 @@ void Map::drawGraph(){
 	//process vertex
 	for(auto n : this->graph.getVertexSet()){
 		gv->addNode(n->getInfo().getId(),n->getInfo().getX()-minX,n->getInfo().getY()-minY);
-		cout<<n->getInfo().getX()-minX <<"| " <<n->getInfo().getY()-minY<<endl;
 	}
-	//todo fix x, y coord passage
 	int eId=0;
 	for(auto n : this->graph.getVertexSet()){
 		for(auto e : n->getAdj()){
@@ -149,7 +147,7 @@ void Map::drawGraph(){
 		}
 	}
 	gv->rearrange();
-	cout<<"Succefully drawn!1\n";
+	cout<<"Succefully drawn!\n";
 	getchar();
 }
 
