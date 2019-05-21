@@ -19,7 +19,7 @@ Coord::Coord(int id,double lat, double lon){
 	this->lat=lat;
 	this->lon=lon;
 }
-Coord::Coord(int id,double lat, double lon,double x, double y){
+Coord::Coord(int id,double lat, double lon,int x, int y){
 	this->id=id;
 	this->lat=lat;
 	this->lon=lon;
@@ -35,10 +35,10 @@ double Coord::getLat(){
 double Coord::getLon(){
 	return this->lon;
 }
-double Coord::getX(){
+int Coord::getX(){
 	return this->x;
 }
-double Coord::getY(){
+int Coord::getY(){
 	return this->y;
 }
 void Coord::setId(int id){
@@ -50,10 +50,10 @@ void Coord::setLat(double lat){
 void Coord::setLon(double lon){
 	this->lon=lon;
 }
-void Coord::setX(double x){
+void Coord::setX(int x){
 	this->x=x;
 }
-void Coord::setY(double y){
+void Coord::setY(int y){
 	this->y=y;
 }
 bool Coord::operator == (const Coord &c) const{

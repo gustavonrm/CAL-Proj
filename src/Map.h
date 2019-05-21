@@ -35,11 +35,12 @@ public:
 	void setFolder(string folder);
 	int loadMap();
 	void processFiles();
-	void processNodesLatLon();
-	void processNodesXY();
+	void processNodes();
 	void processEdges();
 	void processGraph();
 	void drawGraph();
+	//debug coise
+	void printGraph();
 	//TODO algorithm to look for edges
 };
 

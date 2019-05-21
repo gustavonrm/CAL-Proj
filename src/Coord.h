@@ -16,23 +16,24 @@ using namespace std;
 class Coord {
 private:
 	int id;
-	double lat,lon,x,y;
+	double lat,lon;
+	int x,y; //int bc graph only process int
 
 public:
 	Coord();
 	Coord(int id);
 	Coord(int id,double lat, double lon);
-	Coord(int id,double lat, double lon,double x, double y);
+	Coord(int id,double lat, double lon,int x, int y);
 	int getId();
 	double getLat();
 	double getLon();
-	double getX();
-	double getY();
+	int getX();
+	int getY();
 	void setId(int id);
 	void setLat(double lat);
 	void setLon(double lon);
-	void setX(double x);
-	void setY(double y);
+	void setX(int x);
+	void setY(int y);
 
 	bool operator == (const Coord &c) const;
 
