@@ -117,7 +117,7 @@ public:
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
 
-	void dijkstraShortestPath(const T &s);
+	Graph<T> dijkstraShortestPath(const T &s);
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
 
@@ -205,7 +205,7 @@ return false;
 }
 
 template<class T>
-void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
+Graph<T> Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
 	auto s = initSingleSource(origin);
 	MutablePriorityQueue<Vertex<T>> q;
 	q.insert(s);

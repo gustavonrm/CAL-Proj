@@ -26,6 +26,7 @@ private:
 	Map modeling_map;
 	vector<Truck> Trucks;
 	vector<Item> items;
+	vector<Vertex<Coord>*> extractation_points;
 public:
 	Company();
 	void init(string mapFolder, string truckFile, string itemFile);
@@ -33,6 +34,8 @@ public:
 	void processMap();
 	void drawMap();
 	void processRoute();
+	void blockStreet();
+	void addExtratingPoint();
 	void reset();
 };
 
