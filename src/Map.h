@@ -15,6 +15,7 @@
 #include <utility>
 #include <algorithm>
 #include <cstdlib>
+#include <math.h>
 
 #include "graph.h"
 #include "Coord.h"
@@ -33,10 +34,13 @@ private:
 public:
 	Map();
 	void setFolder(string folder);
+	void setGraph(Graph<Coord> graph);
+	Graph<Coord>  getGraph();
 	int loadMap();
 	void processFiles();
 	void processNodes();
 	void processEdges();
+	void processTags();
 	void processGraph();
 	void drawGraph();
 	//debug coise

@@ -11,7 +11,8 @@
 #define ERR_OP_NODES_LAT_LON_FILE 1
 #define ERR_OP_NODES_X_Y_FILE 2
 #define ERR_OP_EDGES_FILE 3
-#define ERR_OP_TRUCK_FILE 4
+#define ERR_OP_TAGS_FILE 4
+#define ERR_OP_TRUCK_FILE 5
 
 
 

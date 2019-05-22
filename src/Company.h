@@ -23,6 +23,7 @@ using namespace std;
 class Company {
 private:
 	Map main_map;
+	Map modeling_map;
 	vector<Truck> Trucks;
 	vector<Item> items;
 public:
@@ -31,6 +32,8 @@ public:
 	void setMainMap(Map main_map);
 	void processMap();
 	void drawMap();
+	void processRoute();
+	void reset();
 };
 
 #endif /* COMPANY_H_ */

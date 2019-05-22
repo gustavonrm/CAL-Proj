@@ -41,6 +41,9 @@ int Coord::getX(){
 int Coord::getY(){
 	return this->y;
 }
+string Coord::getTag(){
+	return this->tag;
+}
 void Coord::setId(int id){
 	this->id=id;
 }
@@ -55,6 +58,9 @@ void Coord::setX(int x){
 }
 void Coord::setY(int y){
 	this->y=y;
+}
+void Coord::setTag(string tag){
+	this->tag.assign(tag);
 }
 bool Coord::operator == (const Coord &c) const{
 	return(id ==c.id && lat == c.lat && lon == c.lon && x == c.x && y == c.y);

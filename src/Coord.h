@@ -18,6 +18,7 @@ private:
 	int id;
 	double lat,lon;
 	int x,y; //int bc graph only process int
+	string tag;
 
 public:
 	Coord();
@@ -29,11 +30,13 @@ public:
 	double getLon();
 	int getX();
 	int getY();
+	string getTag();
 	void setId(int id);
 	void setLat(double lat);
 	void setLon(double lon);
 	void setX(int x);
 	void setY(int y);
+	void setTag(string tag);
 
 	bool operator == (const Coord &c) const;
 

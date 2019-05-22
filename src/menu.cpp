@@ -26,6 +26,7 @@ Menu::Menu(){
 					case 2:
 							break;
 					case 3:
+						this->company.reset();
 						break;
 					case 4:
 						return true;
