@@ -42,6 +42,7 @@ public:
 	Vertex *getPath() const;
 	vector<Edge<T>> getAdj() const; //used on graphviewer api
 	friend class Graph<T> ;
+	friend class MutablePriorityQueue<Vertex<T>>;
 };
 
 template<class T>
@@ -117,7 +118,8 @@ public:
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
 
-	Graph<T> dijkstraShortestPath(const T &s);
+	void dijkstraShortestPath(const T &s);
+	vector<T> getPath(const T &origin, const T &dest) const;
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
 
@@ -139,8 +141,10 @@ vector<Vertex<T> *> Graph<T>::getVertexSet() const {
 template<class T>
 Vertex<T> * Graph<T>::findVertex(const T &in) const {
 	for (auto v : vertexSet)
-		if (v->info == in)
+		if (v->info == in){
 			return v;
+		}
+
 	return NULL;
 }
 
@@ -174,42 +178,42 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 /////////////////////////ALGORITHMS//////////////////////
 
 /**
-* Initializes single-source shortest path data (path, dist).
-* Receives the content of the source vertex and returns a pointer to the source vertex.
-* Used by all single-source shortest path algorithms.
-*/
+ * Initializes single-source shortest path data (path, dist).
+ * Receives the content of the source vertex and returns a pointer to the source vertex.
+ * Used by all single-source shortest path algorithms.
+ */
 template<class T>
 Vertex<T> * Graph<T>::initSingleSource(const T &origin) {
-for (auto v : vertexSet) {
-v->dist = INF;
-v->path = nullptr;
-}
-auto s = findVertex(origin);
-s->dist = 0;
-return s;
+	for (auto v : vertexSet) {
+		v->dist = INF;
+		v->path = nullptr;
+	}
+	auto s = findVertex(origin);
+	s->dist = 0;
+	return s;
 }
 /**
-* Analyzes an edge in single-source shortest path algorithm.
-* Returns true if the target vertex was relaxed (dist, path).
-* Used by all single-source shortest path algorithms.
-*/
+ * Analyzes an edge in single-source shortest path algorithm.
+ * Returns true if the target vertex was relaxed (dist, path).
+ * Used by all single-source shortest path algorithms.
+ */
 template<class T>
 bool Graph<T>::relax(Vertex<T> *v, Vertex<T> *w, double weight) {
-if (v->dist + weight < w->dist) {
-w->dist = v->dist + weight;
-w->path = v;
-return true;
-}
-else
-return false;
+	if (v->dist + weight < w->dist) {
+		w->dist = v->dist + weight;
+		w->path = v;
+		return true;
+	} else
+		return false;
 }
 
 template<class T>
-Graph<T> Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
+void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
 	auto s = initSingleSource(origin);
 	MutablePriorityQueue<Vertex<T>> q;
 	q.insert(s);
 	while (!q.empty()) {
+		cout<<"ola"<<endl;
 		auto v = q.extractMin();
 		for (auto e : v->adj) {
 			auto oldDist = e.dest->dist;
@@ -221,6 +225,23 @@ Graph<T> Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classe
 			}
 		}
 	}
+}
+
+template<class T>
+vector<T> Graph<T>::getPath(const T &origin, const T &dest) const {
+	vector<T> res;
+	auto v = findVertex(dest);
+	if (v == nullptr || v->dist == INF){ // missing or disconnected
+		cout<<"missing or disconnected\n";
+		return res;
+	}
+	for (; v != nullptr; v = v->path)
+		res.push_back(v->info);
+	reverse(res.begin(), res.end());
+	for (auto r : res){
+		cout<<r.getId()<<endl;
+	}
+	return res;
 }
 
 #endif
