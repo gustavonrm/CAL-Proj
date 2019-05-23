@@ -25,6 +25,7 @@ template<class T> class Vertex;
 
 template<class T>
 class Vertex {
+	int index;
 	T info;                // contents
 	vector<Edge<T> > adj;  // outgoing edges
 	bool visited;          // auxiliary field
@@ -38,6 +39,7 @@ class Vertex {
 
 public:
 	Vertex(T in);
+	Vertex(T in,int index);
 	bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
 	T getInfo() const;
 	double getDist() const;
@@ -51,7 +53,10 @@ template<class T>
 Vertex<T>::Vertex(T in) :
 		info(in) {
 }
-
+template<class T>
+Vertex<T>::Vertex(T in,int index):info(in) {
+	this->index = index;
+}
 /*
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
@@ -113,18 +118,21 @@ Vertex<T> * Edge<T>::getDest() const {
 template<class T>
 class Graph {
 	vector<Vertex<T> *> vertexSet;    // vertex set
+	void dfsVisit(Vertex<T> *v,  vector<T> & res) const;
 public:
 	Vertex<T> *findVertex(const T &in) const;
 	bool addVertex(const T &in);
+	bool addVertexNumerated(const T &in,int index); //to convert graph into matrix
 	bool addEdge(const T &sourc, const T &dest, double w);
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
-
+	vector<T> dfs() const;
+	vector<T> bfs(const T &source) const;
 	void dijkstraShortestPath(const T &s);
 	vector<T> getPath(const T &origin, const T &dest) const;
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
-	vector<Vertex<T>*> closestNeighbour(vector<Vertex<T>*> items, Vertex<T> *origin);
+	vector<Vertex<T>*>TSP(Vertex<T> *origin);
 };
 
 template<class T>
@@ -161,7 +169,13 @@ bool Graph<T>::addVertex(const T &in) {
 	vertexSet.push_back(new Vertex<T>(in));
 	return true;
 }
-
+template<class T>
+bool Graph<T>::addVertexNumerated(const T &in,int index){
+	if (findVertex(in) != NULL)
+			return false;
+		vertexSet.push_back(new Vertex<T>(in,index));
+		return true;
+}
 /*
  * Adds an edge to a graph (this), given the contents of the source and
  * destination vertices and the edge weight (w).
@@ -178,6 +192,70 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 }
 
 /////////////////////////ALGORITHMS//////////////////////
+/*
+ * Performs a depth-first search (dfs) in a graph (this).
+ * Returns a vector with the contents of the vertices by dfs order.
+ * Follows the algorithm described in theoretical classes.
+ */
+template <class T>
+vector<T> Graph<T>::dfs() const {
+	vector<T> res;
+	for (auto v : vertexSet)
+		v->visited = false;
+	for (auto v : vertexSet)
+	    if (! v->visited)
+	    	dfsVisit(v, res);
+	return res;
+}
+
+/*
+ * Auxiliary function that visits a vertex (v) and its adjacent, recursively.
+ * Updates a parameter with the list of visited node contents.
+ */
+template <class T>
+void Graph<T>::dfsVisit(Vertex<T> *v, vector<T> & res) const {
+	v->visited = true;
+	res.push_back(v->info);
+	for (auto & e : v->adj) {
+		auto w = e.dest;
+	    if ( ! w->visited)
+	    	dfsVisit(w, res);
+	}
+}
+
+/****************** 2b) bfs ********************/
+
+/*
+ * Performs a breadth-first search (bfs) in a graph (this), starting
+ * from the vertex with the given source contents (source).
+ * Returns a vector with the contents of the vertices by dfs order.
+ * Follows the algorithm described in theoretical classes.
+ */
+template <class T>
+vector<T> Graph<T>::bfs(const T & source) const {
+	vector<T> res;
+	auto s = findVertex(source);
+	if (s == NULL)
+		return res;
+	queue<Vertex<T> *> q;
+	for (auto v : vertexSet)
+		v->visited = false;
+	q.push(s);
+	s->visited = true;
+	while (!q.empty()) {
+		auto v = q.front();
+		q.pop();
+		res.push_back(v->info);
+		for (auto & e : v->adj) {
+			auto w = e.dest;
+		    if ( ! w->visited ) {
+				q.push(w);
+				w->visited = true;
+		    }
+		}
+	}
+	return res;
+}
 
 /**
  * Initializes single-source shortest path data (path, dist).
@@ -244,47 +322,48 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const {
 	}
 	return res;
 }
+
 template<class T>
-vector<Vertex<T>*> Graph<T>::closestNeighbour(vector<Vertex<T>*> items, Vertex<T> *origin){
+vector<Vertex<T>*> Graph<T>::TSP(Vertex<T> *origin){
+	vector<Vertex<T>*> res;
+	vector<int> vertex_indexes;
+	cout<<"ola"<<endl;
+	//hamiltonian matrix
+	/**
+	 *quando uma edge é criada e lhe associado um indice por incremento a 0, esses indices vao ser usados para construir
+	 * a matriz do grafo.assim quando o algoritmo é processado gerando os varios indices por ordemdo caminho, sao feitos
+	 * os matches dos indices com o vertice respetivo e posteriormente desse vertice com as coordenadas do item
+	 *
+	 */
+	int nodes = vertexSet.size();
+	vector<double> v(nodes,0);
+	vector<vector <double>> matrix;
 
-	auto mainVertex = origin;
-	vector<Vertex<T>*> ret;
-
-	for(auto v : vertexSet){
-		if(v == origin){
-			v->discovered = true;
+	for(int i=0; i<nodes ;i++){
+		matrix.push_back(v);
+	}
+	for(int i=0; i<nodes ;i++){
+		for(auto e : vertexSet.at(i)->adj){
+			matrix[i][e.dest->index]=e.weight;
 		}
 	}
 
-	while (1) {
-		bool flag = true;
-		int lighterEdge = 0;
-		for (auto e : mainVertex->getAdj()) {
-			if (e.weight < lighterEdge) {
-				lighterEdge = e.weight;
-			}
-		}
-		for (auto e : mainVertex->getAdj()) {
-			if (e.weight == lighterEdge) {
-				mainVertex = e.dest;
-				mainVertex->discovered = true;
-				break;
-			}
-		}
-		for (auto i : items) {
-			if (i == mainVertex){
-				ret.push_back(i);
-			}
-		}
-		for (auto v : vertexSet) {
-			if (v->discovered == false) {
-				flag = false;
-			}
-		}
-		if (flag)
-			return ret;
-	}
+	//TSP closest neighbour?
 
+
+	return res;
 }
+/**
+ * match final com ciclo incrmental a uma variavel dado match ao vertice na posiçºao do vetor
+ * hamiltoniana usa incide do vetor vrtice e nao id
+ *
+ * O(n!)nem pensar
+ *  https://www.geeksforgeeks.org/traveling-salesman-problem-tsp-implementation/
+ *
+ *  https://www.sanfoundry.com/cpp-program-implement-nearest-neighbour-algorithm/
+ *
+ *  http://www.martinbroadhurst.com/nearest-neighbour-algorithm-for-tsp-in-c.html
+ */
+
 
 #endif

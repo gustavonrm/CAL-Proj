@@ -14,7 +14,7 @@ void Company::init(string mapFolder, string truckFile, string itemFile){
 	this->main_map.setFolder(mapFolder);
 	this->main_map.loadMap();
 	//this->Trucks= loadTrucks(truckFile); //TODO uncomment
-	this->items=loadItems(itemFile);
+	//this->items=loadItems(itemFile);
 	//init origin
 	for(int i=0; i < (int)this->main_map.getGraph().getVertexSet().size();i++){
 		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
@@ -103,14 +103,15 @@ void Company::orderItems(){
 		}
 	}
 
-	this->main_map.getGraph().closestNeighbour(item_delivery,origin);
+	//this->main_map.getGraph().NearestNeighbour(origin);
 	cout<<"Printing res\n";
 	for(auto p : item_delivery){
 		cout << p->getInfo().getId()<<endl;
 	}
 }
 void Company::blockStreet(){
-//Todo destroy an edge basically
+	this->main_map.getGraph().TSP(origin);
+//Todo destroy an edge basically randomly?
 }
 void Company::addExtratingPoint(){
 	string id;

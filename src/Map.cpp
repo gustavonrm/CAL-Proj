@@ -135,8 +135,10 @@ void Map::processTags() {
 }
 void Map::processGraph() {
 	cout << "Processing graphviewer...\n";
+	int index =0;
 	for (auto v : this->nodes) {
-		this->graph.addVertex(v);
+		this->graph.addVertexNumerated(v,index);
+		index++;
 	}
 	for (auto e : this->edges) {
 		int srcId = e.first;

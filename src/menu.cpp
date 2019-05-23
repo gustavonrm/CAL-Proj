@@ -21,9 +21,10 @@ bool Menu::menuManip() {
 		case 0:
 			//this->company.processRoute();
 			//this->company.drawMap();
-			this->company.orderItems();
+			//this->company.orderItems();
 			break;
 		case 1:
+			this->company.blockStreet();
 			break;
 		case 2:
 			this->company.addExtratingPoint();
