@@ -92,8 +92,10 @@ void Map::processEdges() {
 			line.erase(0, line.find(',') + 2);
 			dest = line.substr(0, line.find(')'));
 			line.clear();
-			pair<int, int> edge(stoi(src), stoi(dest));
-			this->edges.push_back(edge);
+			pair<int, int> edge1(stoi(src), stoi(dest));
+			pair<int, int> edge2(stoi(dest), stoi(src));
+			this->edges.push_back(edge1);
+			this->edges.push_back(edge2);
 		}
 	} else {
 		cout << "Error opening files!\n";

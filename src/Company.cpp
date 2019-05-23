@@ -54,10 +54,35 @@ void Company::processRoute(){
 		//stuff
 		GraphViewer *gv = new GraphViewer(1920, 1080, false);
 		gv->createWindow(1920, 1080);
-		gv->defineVertexColor("black");
+		gv->defineEdgeColor("black");
 		gv->defineEdgeColor("red");
 		//make a translation
 		int minX = 100000000, minY = 100000000;
+
+		//make a translation
+			for (auto n : this->main_map.getGraph().getVertexSet()) {
+				if (n->getInfo().getX() < minX) {
+					minX = n->getInfo().getX();
+				}
+				if (n->getInfo().getY() < minY) {
+					minY = n->getInfo().getY();
+				}
+			}
+			//process vertex
+			for (auto n : this->main_map.getGraph().getVertexSet()) {
+				gv->addNode(n->getInfo().getId(), n->getInfo().getX() - minX,
+						n->getInfo().getY() - minY);
+			}
+			int eId = 0;
+			for (auto n : this->main_map.getGraph().getVertexSet()) {
+				for (auto e : n->getAdj()) {
+					gv->addEdge(eId, n->getInfo().getId(),
+							e.getDest()->getInfo().getId(), EdgeType::DIRECTED);
+					eId++;
+				}
+			}
+		gv->rearrange();
+		//gv->setVertexColor("green");
 		for (auto n : res) {
 			if (n.getX() < minX) {
 				minX = n.getX();

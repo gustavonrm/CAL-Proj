@@ -216,7 +216,6 @@ void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
 	MutablePriorityQueue<Vertex<T>> q;
 	q.insert(s);
 	while (!q.empty()) {
-		cout << "ola" << endl;
 		auto v = q.extractMin();
 		for (auto e : v->adj) {
 			auto oldDist = e.dest->dist;
