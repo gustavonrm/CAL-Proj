@@ -14,11 +14,10 @@ void Company::init(string mapFolder, string truckFile, string itemFile){
 	this->main_map.setFolder(mapFolder);
 	this->main_map.loadMap();
 	//this->Trucks= loadTrucks(truckFile); //TODO uncomment
-	//this->items=loadItems(itemFile);
+	this->items=loadItems(itemFile);
 	//init origin
 	for(int i=0; i < (int)this->main_map.getGraph().getVertexSet().size();i++){
 		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
-			this->origin = this->main_map.getGraph().getVertexSet().at(i)->getInfo();
 			break;
 		}
 	}
@@ -36,17 +35,16 @@ void Company::drawMap(){
  *  4#  multiple trucks multiple items considering volumes and sizes
  */
 void Company::processRoute(){
-	Vertex<Coord> *o;
 	vector<Coord> res;
 	for(int i=0; i < this->main_map.getGraph().getVertexSet().size();i++){
-		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
-			o = this->main_map.getGraph().getVertexSet().at(i);
+		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getId() == 1109149480){
+			origin = this->main_map.getGraph().getVertexSet().at(i);
 			break;
 		}
 	}
-	this->main_map.getGraph().dijkstraShortestPath(o->getInfo());
+	this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
 	cout<<"Processed dijkstra!\n";
-	res = this->main_map.getGraph().getPath(o->getInfo(), this->extraction_points.at(0)->getInfo());
+	res = this->main_map.getGraph().getPath(origin->getInfo(), this->extraction_points.at(0)->getInfo());
 
 		for( auto r : res ){
 			cout<< r.getId()<<endl;
@@ -54,8 +52,9 @@ void Company::processRoute(){
 		//stuff
 		GraphViewer *gv = new GraphViewer(1920, 1080, false);
 		gv->createWindow(1920, 1080);
-		gv->defineEdgeColor("black");
+		gv->defineVertexColor("black");
 		gv->defineEdgeColor("red");
+		gv->defineEdgeCurved(false);
 		//make a translation
 		int minX = 100000000, minY = 100000000;
 
@@ -70,8 +69,10 @@ void Company::processRoute(){
 			}
 			//process vertex
 			for (auto n : this->main_map.getGraph().getVertexSet()) {
-				gv->addNode(n->getInfo().getId(), n->getInfo().getX() - minX,
-						n->getInfo().getY() - minY);
+				gv->addNode(n->getInfo().getId(), n->getInfo().getX() - minX,n->getInfo().getY() - minY);
+				if(!n->getInfo().getTag().empty()){
+					gv->setVertexColor(n->getInfo().getId(),"pink");
+				}
 			}
 			int eId = 0;
 			for (auto n : this->main_map.getGraph().getVertexSet()) {
@@ -82,17 +83,9 @@ void Company::processRoute(){
 				}
 			}
 		gv->rearrange();
-		//gv->setVertexColor("green");
-		for (auto n : res) {
-			if (n.getX() < minX) {
-				minX = n.getX();
-			}
-			if (n.getY() < minY) {
-				minY = n.getY();
-			}
-		}
 		//process vertex
 		for (auto n : res ) {
+			gv->setVertexColor(n.getId(),"green");
 			gv->addNode(n.getId(), n.getX() - minX,n.getY() - minY);
 		}
 		gv->rearrange();
@@ -101,7 +94,21 @@ void Company::processRoute(){
 
 
 }
+void Company::orderItems(){
+	for(auto v : this->main_map.getGraph().getVertexSet()){
+		for( auto i : items){
+			if(i.getLat()== v->getInfo().getLat() && i.getLon() == v->getInfo().getLon()){
+				this->item_delivery.push_back(v);
+			}
+		}
+	}
 
+	this->main_map.getGraph().closestNeighbour(item_delivery,origin);
+	cout<<"Printing res\n";
+	for(auto p : item_delivery){
+		cout << p->getInfo().getId()<<endl;
+	}
+}
 void Company::blockStreet(){
 //Todo destroy an edge basically
 }

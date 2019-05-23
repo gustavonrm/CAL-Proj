@@ -124,8 +124,7 @@ public:
 	vector<T> getPath(const T &origin, const T &dest) const;
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
-	vector<Item> closestNeighbour(vector<Item> items);
-
+	vector<Vertex<T>*> closestNeighbour(vector<Vertex<T>*> items, Vertex<T> *origin);
 };
 
 template<class T>
@@ -245,48 +244,47 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest) const {
 	}
 	return res;
 }
-//TODO duvido q funcione mas é mais ao menos isto
 template<class T>
-vector<Item> Graph<T>::closestNeighbour(vector<Item> items) {
-	Vertex<T> mainVertex;
-	vector<Item> ret;
-	for (auto v : vertexSet) {
-		if (v->getInfo.getLat() == items.at(0).getLat()
-				&& v->getInfo.getLon() == items.at(0).getLon()) {
-			mainVertex = v;
+vector<Vertex<T>*> Graph<T>::closestNeighbour(vector<Vertex<T>*> items, Vertex<T> *origin){
+
+	auto mainVertex = origin;
+	vector<Vertex<T>*> ret;
+
+	for(auto v : vertexSet){
+		if(v == origin){
 			v->discovered = true;
-			ret.push_back(items.at(0));
 		}
 	}
+
 	while (1) {
 		bool flag = true;
 		int lighterEdge = 0;
-		for (auto e : mainVertex.getAdj()) {
-			if (e->weight < lighterEdge) {
-				lighterEdge = e->weight;
+		for (auto e : mainVertex->getAdj()) {
+			if (e.weight < lighterEdge) {
+				lighterEdge = e.weight;
 			}
 		}
-		for (auto e : mainVertex.getAdj()) {
-			if (e->weight == lighterEdge) {
-				mainVertex = e->dest;
+		for (auto e : mainVertex->getAdj()) {
+			if (e.weight == lighterEdge) {
+				mainVertex = e.dest;
 				mainVertex->discovered = true;
 				break;
 			}
 		}
 		for (auto i : items) {
-			if (mainVertex->getInfo().getLat() == i.getLat()
-					&& mainVertex->getInfo().getLon() == i.getLon()){
+			if (i == mainVertex){
 				ret.push_back(i);
 			}
 		}
-		for(auto v : vertexSet){
-			if(v->discovered== false){
+		for (auto v : vertexSet) {
+			if (v->discovered == false) {
 				flag = false;
 			}
 		}
-		if(flag)
+		if (flag)
 			return ret;
 	}
+
 }
 
 #endif
