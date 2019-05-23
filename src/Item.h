@@ -21,6 +21,8 @@ private:
 	double volume;
 public:
 	Item(pair<double,double> adress,double weight,double volume);
+	double getLat();
+	double getLon();
 
 };
 

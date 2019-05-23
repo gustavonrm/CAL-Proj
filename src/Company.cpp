@@ -13,9 +13,8 @@ Company::Company(){
 void Company::init(string mapFolder, string truckFile, string itemFile){
 	this->main_map.setFolder(mapFolder);
 	this->main_map.loadMap();
-	//this->main_map.printGraph();
-	this->Trucks= loadTrucks(truckFile);
-	this->items=loadItems(itemFile);
+	//this->Trucks= loadTrucks(truckFile); //TODO uncomment
+	//this->items=loadItems(itemFile);
 	//init origin
 	for(int i=0; i < (int)this->main_map.getGraph().getVertexSet().size();i++){
 		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
@@ -111,3 +110,4 @@ void Company::reset(){
 	this->main_map.loadMap();
 	this->extraction_points.clear();
 }
+

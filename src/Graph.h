@@ -11,6 +11,7 @@
 #include <cmath>
 
 #include "MutablePriorityQueue.h"
+#include "Item.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ class Vertex {
 	T info;                // contents
 	vector<Edge<T> > adj;  // outgoing edges
 	bool visited;          // auxiliary field
+	bool discovered;
 	double dist = 0;
 	Vertex<T> *path = NULL;
 	int queueIndex = 0; 		// required by MutablePriorityQueue
@@ -42,7 +44,7 @@ public:
 	Vertex *getPath() const;
 	vector<Edge<T>> getAdj() const; //used on graphviewer api
 	friend class Graph<T> ;
-	friend class MutablePriorityQueue<Vertex<T>>;
+	friend class MutablePriorityQueue<Vertex<T>> ;
 };
 
 template<class T>
@@ -122,6 +124,7 @@ public:
 	vector<T> getPath(const T &origin, const T &dest) const;
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
+	vector<Item> closestNeighbour(vector<Item> items);
 
 };
 
@@ -141,7 +144,7 @@ vector<Vertex<T> *> Graph<T>::getVertexSet() const {
 template<class T>
 Vertex<T> * Graph<T>::findVertex(const T &in) const {
 	for (auto v : vertexSet)
-		if (v->info == in){
+		if (v->info == in) {
 			return v;
 		}
 
@@ -213,7 +216,7 @@ void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
 	MutablePriorityQueue<Vertex<T>> q;
 	q.insert(s);
 	while (!q.empty()) {
-		cout<<"ola"<<endl;
+		cout << "ola" << endl;
 		auto v = q.extractMin();
 		for (auto e : v->adj) {
 			auto oldDist = e.dest->dist;
@@ -231,17 +234,60 @@ template<class T>
 vector<T> Graph<T>::getPath(const T &origin, const T &dest) const {
 	vector<T> res;
 	auto v = findVertex(dest);
-	if (v == nullptr || v->dist == INF){ // missing or disconnected
+	if (v == nullptr || v->dist == INF) { // missing or disconnected
 		cout<<"missing or disconnected\n";
 		return res;
 	}
 	for (; v != nullptr; v = v->path)
 		res.push_back(v->info);
 	reverse(res.begin(), res.end());
-	for (auto r : res){
-		cout<<r.getId()<<endl;
+	for (auto r : res) {
+		cout << r.getId() << endl;
 	}
 	return res;
+}
+//TODO duvido q funcione mas é mais ao menos isto
+template<class T>
+vector<Item> Graph<T>::closestNeighbour(vector<Item> items) {
+	Vertex<T> mainVertex;
+	vector<Item> ret;
+	for (auto v : vertexSet) {
+		if (v->getInfo.getLat() == items.at(0).getLat()
+				&& v->getInfo.getLon() == items.at(0).getLon()) {
+			mainVertex = v;
+			v->discovered = true;
+			ret.push_back(items.at(0));
+		}
+	}
+	while (1) {
+		bool flag = true;
+		int lighterEdge = 0;
+		for (auto e : mainVertex.getAdj()) {
+			if (e->weight < lighterEdge) {
+				lighterEdge = e->weight;
+			}
+		}
+		for (auto e : mainVertex.getAdj()) {
+			if (e->weight == lighterEdge) {
+				mainVertex = e->dest;
+				mainVertex->discovered = true;
+				break;
+			}
+		}
+		for (auto i : items) {
+			if (mainVertex->getInfo().getLat() == i.getLat()
+					&& mainVertex->getInfo().getLon() == i.getLon()){
+				ret.push_back(i);
+			}
+		}
+		for(auto v : vertexSet){
+			if(v->discovered== false){
+				flag = false;
+			}
+		}
+		if(flag)
+			return ret;
+	}
 }
 
 #endif

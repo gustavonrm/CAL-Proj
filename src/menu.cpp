@@ -19,7 +19,8 @@ bool Menu::menuManip() {
 		this->readInput();
 		switch (this->option) {
 		case 0:
-			this->company.processRoute();
+			//this->company.processRoute();
+			this->company.drawMap();
 			break;
 		case 1:
 			break;

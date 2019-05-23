@@ -157,8 +157,14 @@ void Map::processGraph() {
 				pow((dest.getX() - src.getX()), 2)
 						+ pow((dest.getY() - src.getY()), 2));
 		this->graph.addEdge(src, dest, w);
-		//TODO check weight
 	}
+	/*
+	//remove single nodes
+	for(int i=0; i< this->graph.getVertexSet().size();i++){
+		if(this->graph.getVertexSet().at(i)->getAdj().empty())
+			//TODO preciso q alguem faça isto n consigo
+	}
+	*/
 }
 
 void Map::drawGraph() {
