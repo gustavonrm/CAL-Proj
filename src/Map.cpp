@@ -19,7 +19,7 @@ void Map::setGraph(Graph<Coord> graph) {
 Graph<Coord> Map::getGraph() {
 	return this->graph;
 }
-int Map::loadMap() {
+void Map::loadMap() {
 	this->processFiles();
 	this->processNodes();
 	this->processTags();
@@ -84,6 +84,7 @@ void Map::processEdges() {
 	if (file.is_open()) {
 		cout << "Processing edges...\n";
 		getline(file, edges);
+		int eId = 0;
 		while (getline(file, line)) {
 			//read values
 			string src, dest;
@@ -92,8 +93,11 @@ void Map::processEdges() {
 			line.erase(0, line.find(',') + 2);
 			dest = line.substr(0, line.find(')'));
 			line.clear();
-			pair<int, int> edge1(stoi(src), stoi(dest));
-			pair<int, int> edge2(stoi(dest), stoi(src));
+
+			pair<pair<int, int>,int> edge1(make_pair(stoi(src), stoi(dest)),eId);
+			eId++;
+			pair<pair<int, int>, int > edge2(make_pair(stoi(dest), stoi(src)),eId);
+			eId++;
 			this->edges.push_back(edge1);
 			this->edges.push_back(edge2);
 		}
@@ -120,7 +124,7 @@ void Map::processTags() {
 				continue;
 			}
 			int tmp = stoi(line);
-			for (int i=0; i<this->nodes.size();i++) {
+			for (unsigned int i=0; i<this->nodes.size();i++) {
 				if (tmp== nodes.at(i).getId()) {
 					nodes.at(i).setTag(name);
 					break;
@@ -141,8 +145,9 @@ void Map::processGraph() {
 		index++;
 	}
 	for (auto e : this->edges) {
-		int srcId = e.first;
-		int destId = e.second;
+		int srcId = e.first.first;
+		int destId = e.first.second;
+		int eId = e.second;
 		Coord src;
 		Coord dest;
 		//TODO use binary search
@@ -154,13 +159,15 @@ void Map::processGraph() {
 				dest = n;
 			}
 			if (dest.getId() != 0 && src.getId() != 0) {
+
 				break;
 			}
 		}
+
 		double w = sqrt(
 				pow((dest.getX() - src.getX()), 2)
 						+ pow((dest.getY() - src.getY()), 2));
-		this->graph.addEdge(src, dest, w);
+		this->graph.addEdge(src, dest, w,eId);
 	}
 	/*
 	//remove single nodes
@@ -191,12 +198,12 @@ void Map::drawGraph() {
 		gv->addNode(n->getInfo().getId(), n->getInfo().getX() - minX,
 				n->getInfo().getY() - minY);
 	}
-	int eId = 0;
+
 	for (auto n : this->graph.getVertexSet()) {
 		for (auto e : n->getAdj()) {
-			gv->addEdge(eId, n->getInfo().getId(),
+			gv->addEdge(e.eId, n->getInfo().getId(),
 					e.getDest()->getInfo().getId(), EdgeType::DIRECTED);
-			eId++;
+
 		}
 	}
 	gv->rearrange();

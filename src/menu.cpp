@@ -19,9 +19,10 @@ bool Menu::menuManip() {
 		this->readInput();
 		switch (this->option) {
 		case 0:
-			//this->company.processRoute();
-			//this->company.drawMap();
+			this->company.processRoute();
 			//this->company.orderItems();
+			//this->company.drawMap();
+
 			break;
 		case 1:
 			this->company.blockStreet();

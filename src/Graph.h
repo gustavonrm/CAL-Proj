@@ -35,7 +35,7 @@ class Vertex {
 	int queueIndex = 0; 		// required by MutablePriorityQueue
 
 	bool processing = false;
-	void addEdge(Vertex<T> *dest, double w);
+	void addEdge(Vertex<T> *dest, double w, int eId);
 
 public:
 	Vertex(T in);
@@ -62,8 +62,8 @@ Vertex<T>::Vertex(T in,int index):info(in) {
  * with a given destination vertex (d) and edge weight (w).
  */
 template<class T>
-void Vertex<T>::addEdge(Vertex<T> *d, double w) {
-	adj.push_back(Edge<T>(d, w));
+void Vertex<T>::addEdge(Vertex<T> *d, double w, int eId) {
+	adj.push_back(Edge<T>(d, w, eId));
 }
 
 template<class T>
@@ -97,15 +97,16 @@ class Edge {
 	Vertex<T> * dest;      // destination vertex
 	double weight;         // edge weight
 public:
-	Edge(Vertex<T> *d, double w);
+	int eId;
+	Edge(Vertex<T> *d, double w, int eId);
 	Vertex<T> * getDest() const; //used on graph viewer api
 	friend class Graph<T> ;
 	friend class Vertex<T> ;
 };
 
 template<class T>
-Edge<T>::Edge(Vertex<T> *d, double w) :
-		dest(d), weight(w) {
+Edge<T>::Edge(Vertex<T> *d, double w, int eId) :
+		dest(d), weight(w), eId(eId) {
 }
 
 template<class T>
@@ -123,13 +124,13 @@ public:
 	Vertex<T> *findVertex(const T &in) const;
 	bool addVertex(const T &in);
 	bool addVertexNumerated(const T &in,int index); //to convert graph into matrix
-	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addEdge(const T &sourc, const T &dest, double w, int eId);
 	int getNumVertex() const;
 	vector<Vertex<T> *> getVertexSet() const;
 	vector<T> dfs() const;
 	vector<T> bfs(const T &source) const;
 	void dijkstraShortestPath(const T &s);
-	vector<T> getPath(const T &origin, const T &dest) const;
+	vector<Vertex<T>*> getPath(const T &origin, const T &dest) const;
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
 	vector<Vertex<T>*>TSP(Vertex<T> *origin);
@@ -182,12 +183,12 @@ bool Graph<T>::addVertexNumerated(const T &in,int index){
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 template<class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w, int eId) {
 	auto v1 = findVertex(sourc);
 	auto v2 = findVertex(dest);
 	if (v1 == NULL || v2 == NULL)
 		return false;
-	v1->addEdge(v2, w);
+	v1->addEdge(v2, w, eId);
 	return true;
 }
 
@@ -271,6 +272,7 @@ Vertex<T> * Graph<T>::initSingleSource(const T &origin) {
 	auto s = findVertex(origin);
 	s->dist = 0;
 	return s;
+	cout << "hello";
 }
 /**
  * Analyzes an edge in single-source shortest path algorithm.
@@ -289,6 +291,7 @@ bool Graph<T>::relax(Vertex<T> *v, Vertex<T> *w, double weight) {
 
 template<class T>
 void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
+	cout << "HI";
 	auto s = initSingleSource(origin);
 	MutablePriorityQueue<Vertex<T>> q;
 	q.insert(s);
@@ -307,18 +310,18 @@ void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
 }
 
 template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest) const {
-	vector<T> res;
+vector<Vertex<T>*> Graph<T>::getPath(const T &origin, const T &dest) const {
+	vector<Vertex<T>*> res;
 	auto v = findVertex(dest);
 	if (v == nullptr || v->dist == INF) { // missing or disconnected
 		cout<<"missing or disconnected\n";
 		return res;
 	}
 	for (; v != nullptr; v = v->path)
-		res.push_back(v->info);
+		res.push_back(v);
 	reverse(res.begin(), res.end());
 	for (auto r : res) {
-		cout << r.getId() << endl;
+		cout << r->getInfo().getId() << endl;
 	}
 	return res;
 }

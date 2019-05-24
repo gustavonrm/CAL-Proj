@@ -26,7 +26,7 @@ using namespace std;
 
 class Map {
 private:
-	vector<pair<int,int>> edges;
+	vector<pair <pair<int,int>, int> >edges;
 	vector<Coord> nodes;
 	Graph<Coord> graph;
 	string folder;
@@ -36,7 +36,7 @@ public:
 	void setFolder(string folder);
 	void setGraph(Graph<Coord> graph);
 	Graph<Coord>  getGraph();
-	int loadMap();
+	void loadMap();
 	void processFiles();
 	void processNodes();
 	void processEdges();

@@ -6,6 +6,7 @@
  */
 
 #include "Company.h"
+#include <iterator>
 
 Company::Company(){
 
@@ -17,15 +18,16 @@ void Company::init(string mapFolder, string truckFile, string itemFile){
 	//this->items=loadItems(itemFile);
 	//init origin
 	for(int i=0; i < (int)this->main_map.getGraph().getVertexSet().size();i++){
-		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
-			break;
+			if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
+				break;
+			}
 		}
-	}
 }
 void Company::setMainMap(Map main_map){
 	this->main_map=main_map;
 }
 void Company::drawMap(){
+	cout << "hey";
 	this->main_map.drawGraph();
 }
 /*
@@ -35,19 +37,21 @@ void Company::drawMap(){
  *  4#  multiple trucks multiple items considering volumes and sizes
  */
 void Company::processRoute(){
-	vector<Coord> res;
-	for(int i=0; i < this->main_map.getGraph().getVertexSet().size();i++){
+	vector<Vertex<Coord>*> res;
+	for(unsigned int i=0; i < this->main_map.getGraph().getVertexSet().size();i++){
 		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getId() == 1109149480){
 			origin = this->main_map.getGraph().getVertexSet().at(i);
 			break;
 		}
 	}
+
 	this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
 	cout<<"Processed dijkstra!\n";
+
 	res = this->main_map.getGraph().getPath(origin->getInfo(), this->extraction_points.at(0)->getInfo());
 
 		for( auto r : res ){
-			cout<< r.getId()<<endl;
+			cout<< r->getInfo().getId()<<endl;
 		}
 		//stuff
 		GraphViewer *gv = new GraphViewer(1920, 1080, false);
@@ -74,19 +78,37 @@ void Company::processRoute(){
 					gv->setVertexColor(n->getInfo().getId(),"pink");
 				}
 			}
-			int eId = 0;
+
+
 			for (auto n : this->main_map.getGraph().getVertexSet()) {
 				for (auto e : n->getAdj()) {
-					gv->addEdge(eId, n->getInfo().getId(),
+					gv->addEdge(e.eId, n->getInfo().getId(),
 							e.getDest()->getInfo().getId(), EdgeType::DIRECTED);
-					eId++;
 				}
 			}
 		gv->rearrange();
 		//process vertex
-		for (auto n : res ) {
-			gv->setVertexColor(n.getId(),"green");
-			gv->addNode(n.getId(), n.getX() - minX,n.getY() - minY);
+		vector<Vertex<Coord>*>::iterator n;
+		for (n = res.begin(); n!= res.end(); n++)  {
+			gv->setVertexColor((*n)->getInfo().getId(),"green");
+			cout << "CCC";
+			for( unsigned int i = 0; i < (*n)->getAdj().size(); i++)
+			{
+				cout << "HELLO";
+				if(*next(n,1) != NULL)
+				{
+					if ((*next(n,1))->getInfo().getId() == (*n)->getAdj().at(i).getDest()->getInfo().getId())
+					{
+						if((*n)->getAdj().at(i).getDest()->getInfo().getId() == (*next(n,1))->getInfo().getId())
+						{
+							gv->setEdgeColor((*n)->getAdj().at(i).eId, "blue");
+							cout << "HEY";
+						}
+					}
+				}
+			}
+			gv->addNode((*n)->getInfo().getId(), (*n)->getInfo().getX() - minX,(*n)->getInfo().getY() - minY);
+
 		}
 		gv->rearrange();
 		cout << "Succefully drawn!\n";
@@ -95,6 +117,8 @@ void Company::processRoute(){
 
 }
 void Company::orderItems(){
+	vector<Vertex<Coord>*> res;
+
 	for(auto v : this->main_map.getGraph().getVertexSet()){
 		for( auto i : items){
 			if(i.getLat()== v->getInfo().getLat() && i.getLon() == v->getInfo().getLon()){
@@ -102,12 +126,32 @@ void Company::orderItems(){
 			}
 		}
 	}
+	vector< pair<double,Vertex<Coord>*> > distances;
+	double distance;
 
-	//this->main_map.getGraph().NearestNeighbour(origin);
+	vector<Vertex<Coord>*>::iterator it;
+	for(it = item_delivery.begin(); it !=item_delivery.end();it++)
+	{
+		distance = 0;
+		res = this->main_map.getGraph().getPath(origin->getInfo(), (*it)->getInfo());
+		for(unsigned int j = 0; j < res.size(); j++)
+		{
+			distance += res[j]->getDist();
+		}
+		distances.push_back(make_pair(distance, *it));
+	}
+	sort(distances.begin(), distances.end());
+
 	cout<<"Printing res\n";
 	for(auto p : item_delivery){
 		cout << p->getInfo().getId()<<endl;
 	}
+	cout << endl << endl << "printing sorted";
+	for(auto p : distances){
+			cout << p.second->getInfo().getId()<<endl;
+		}
+
+
 }
 void Company::blockStreet(){
 	this->main_map.getGraph().TSP(origin);

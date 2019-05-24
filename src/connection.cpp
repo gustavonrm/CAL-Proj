@@ -29,7 +29,7 @@ Connection::Connection(short port) {
 #else
 		WSADATA wsaData;
     int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-    if (iResult != NO_ERROR)
+    if (iResult != 0)
 				printf("Client: Error at WSAStartup().\n");
 
 	// Create a socket.
