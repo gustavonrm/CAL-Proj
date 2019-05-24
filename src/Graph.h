@@ -347,7 +347,6 @@ vector<Vertex<T>*> Graph<T>::TSP(Vertex<T> *origin){
 			matrix[i][e.dest->index]=e.weight;
 		}
 	}
-
 	//TSP closest neighbour?
 
 
@@ -363,6 +362,40 @@ vector<Vertex<T>*> Graph<T>::TSP(Vertex<T> *origin){
  *  https://www.sanfoundry.com/cpp-program-implement-nearest-neighbour-algorithm/
  *
  *  http://www.martinbroadhurst.com/nearest-neighbour-algorithm-for-tsp-in-c.html
+ *
+ *É ESTE!!! O(2^n*n)
+ *  https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm
+ *  https://www.quora.com/Are-there-any-good-examples-of-the-Held-Karp-algorithm-in-C++-Hard-to-find-example-code-to-solve-the-traveling-salesman-problem-Everyone-wants-to-just-talk-about-theory-and-not-show-how-to-actually-do-it-What-is-the-big-secret
+ *
+ *ACO
+ * https://pt.wikipedia.org/wiki/Col%C3%B4nia_de_formigas_(otimiza%C3%A7%C3%A3o)
+ */
+
+/**
+ * TSP - IMPORTANTEEEEEE
+ *o problema desrceve necessidade de percorrer todos os pontos de um grafo de modo a conseguir terminar
+ * no inicio
+ *
+ * ou seja, o primeiro problema no nosso grafo  é o facto de ser dirigido, sendo assim nunca mas nunca se iria chegar
+ * ao inicio
+ *
+ *  o algoritmo de closest neighbour consiste em:
+ * 1 fixar um vertex origin
+ *	2 pegar nesse vertexe olhar para todos os edges, selcionando o mais baixo
+ *	3 avancar para esse edge, e marca o anteriro como visitado
+ * 4 se todos foram visitados para se nao voltaa 2
+ *
+ * o meu erro de implementao deveu-se ao simples facto de se usar mos o grafoda figura,vamos marcar vertices como vistitados
+ * e nunca poderemos chegar ao incio pois a ruas tipo "ramo de arvore" sao uma linha logo se ele a antigisse nunca ia voltar
+ *  pq a unica aresta acessivel ia ter um  n vistidao
+ *
+ *  posto isot, a matrix q fiz para converter o grafo para usar ACO e merdas mais hardcore creio n ser necessario,
+ * basta porntanto (criar um novo grafo n se, so para alocar)percorrer todos os vertices e por cada um cirar arestas com pesos
+ *  feitos atraves das distancias coordendas xy, assim todos os pontos do seão conecatados uns aos outros e será possivel usar o algoritmo acima referido
+ *
+ *  nota que a funcao deverá retornar a lista de edges orndandas por vizinho mais proximo, portanto a cada avanco no ciclo alocar o vertice para q se avanca num vetor a ser retornado
+ *
+ *vou coloar uma imagem para q se perceba melhor
  */
 
 
