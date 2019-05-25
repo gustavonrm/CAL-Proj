@@ -36,16 +36,16 @@ vector<Item> loadItems(string itemFile){
 	file.open(itemFile);
 	if(file.is_open()){
 		while(getline(file,line)){
-			string lat,lon,w,v;
-			lat=line.substr(0,line.find(';'));
+			string x,y,w,v;
+			x=line.substr(0,line.find(';'));
 			line.erase(0,line.find(';')+1);
-			lon=line.substr(0,line.find(';'));
+			y=line.substr(0,line.find(';'));
 			line.erase(0,line.find(';')+1);
 			w=line.substr(0,line.find(';'));
 			line.erase(0,line.find(';')+1);
 			v=line.substr(0,line.find(';'));
 			line.clear();
-			pair<double,double> a(stod(lat),stod(lon));
+			pair<int,int> a(stoi(x),stoi(y));
 			Item i(a,stod(w),stod(v));
 			ret.push_back(i);
 		}

@@ -7,17 +7,17 @@
 
 #include "item.h"
 
-Item::Item(pair<double,double> adress,double weight,double volume){
+Item::Item(pair<int,int> adress,double weight,double volume){
 	this->adress=adress;
 	this->weight=weight;
 	this->volume=volume;
 }
 
-double Item::getLat(){
+int Item::getX(){
 	return this->adress.first;
 }
 
-double Item::getLon(){
+int Item::getY(){
 	return this->adress.second;
 }
 

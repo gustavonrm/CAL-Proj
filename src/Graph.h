@@ -291,7 +291,7 @@ bool Graph<T>::relax(Vertex<T> *v, Vertex<T> *w, double weight) {
 
 template<class T>
 void Graph<T>::dijkstraShortestPath(const T &origin) { //adapted from classes
-	cout << "HI";
+	//cout << "HI";
 	auto s = initSingleSource(origin);
 	MutablePriorityQueue<Vertex<T>> q;
 	q.insert(s);
