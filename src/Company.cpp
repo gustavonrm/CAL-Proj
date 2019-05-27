@@ -45,8 +45,10 @@ void Company::processRoute(){
 		}
 	}
 
+	//TODO SELECIONAR O ALGORITMO A USAR
 	this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
 	cout<<"Processed dijkstra!\n";
+
 
 	res = this->main_map.getGraph().getPath(origin->getInfo(), this->extraction_points.at(0)->getInfo());
 
@@ -75,6 +77,7 @@ void Company::processRoute(){
 			for (auto n : this->main_map.getGraph().getVertexSet()) {
 				gv->addNode(n->getInfo().getId(), n->getInfo().getX() - minX,n->getInfo().getY() - minY);
 				if(!n->getInfo().getTag().empty()){
+					gv->setVertexLabel(n->getInfo().getId(),n->getInfo().getTag());
 					gv->setVertexColor(n->getInfo().getId(),"pink");
 				}
 			}
@@ -82,6 +85,7 @@ void Company::processRoute(){
 
 			for (auto n : this->main_map.getGraph().getVertexSet()) {
 				for (auto e : n->getAdj()) {
+					gv->setEdgeLabel(e.eId, to_string(e.eId));
 					gv->addEdge(e.eId, n->getInfo().getId(),
 							e.getDest()->getInfo().getId(), EdgeType::DIRECTED);
 				}
@@ -102,14 +106,24 @@ void Company::processRoute(){
 						if((*n)->getAdj().at(i).getDest()->getInfo().getId() == (*next(n,1))->getInfo().getId())
 						{
 							gv->setEdgeColor((*n)->getAdj().at(i).eId, "blue");
+							gv->setEdgeThickness((*n)->getAdj().at(i).eId, 3);
 							cout << "HEY";
 						}
 					}
 				}
 			}
 			gv->addNode((*n)->getInfo().getId(), (*n)->getInfo().getX() - minX,(*n)->getInfo().getY() - minY);
-
 		}
+		gv->rearrange();
+		for (auto n : this->main_map.getGraph().getVertexSet()) {
+						for (auto e : n->getAdj()) {
+							for(unsigned int i = 0; i<blockedEdges.size(); i++){
+								if(e.eId == blockedEdges[i]){
+									gv->setEdgeLabel(e.eId,"blocked");
+								}
+							}
+						}
+					}
 		gv->rearrange();
 		cout << "Succefully drawn!\n";
 		getchar();
@@ -154,8 +168,22 @@ void Company::orderItems(){
 
 }
 void Company::blockStreet(){
-	this->main_map.getGraph().TSP(origin);
-//Todo destroy an edge basically randomly?
+		int id;
+		cout << "Insert id ->";
+		cin >> id;
+
+		if( id == 0 ||  id%2 == 0){ //is even
+			blockedEdges.push_back(id);
+			blockedEdges.push_back(id+1);
+			this->main_map.getGraph().removeEdge(id);
+			this->main_map.getGraph().removeEdge(id+1);
+		}
+		if( id%2 !=0){ //is odd
+					blockedEdges.push_back(id-1);
+					blockedEdges.push_back(id);
+					this->main_map.getGraph().removeEdge(id-1);
+					this->main_map.getGraph().removeEdge(id);
+		}
 }
 void Company::addExtratingPoint(){
 	string id;
@@ -167,6 +195,9 @@ void Company::addExtratingPoint(){
 					<< " || Lat: "<<v->getInfo().getLat()<< "Lon: "<<v->getInfo().getLon()<<endl;
 		}
 	}
+	//1346179432
+	//4694
+	//3396
 	//TODO control erros in case bad typing and id not matching, and repeting a node
 	cout<<"Insert id -> ";
 	cin>>id;
@@ -185,6 +216,7 @@ void Company::addExtratingPoint(){
 }
 void Company::reset(){
 	this->main_map.loadMap();
+	this->blockedEdges = {};
 	this->extraction_points.clear();
 }
 

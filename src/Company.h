@@ -22,6 +22,7 @@ using namespace std;
 
 class Company {
 private:
+	vector<int> blockedEdges;
 	Map main_map;
 	Map modeling_map;
 	vector<Truck> Trucks;

@@ -45,9 +45,15 @@ public:
 	double getDist() const;
 	Vertex *getPath() const;
 	vector<Edge<T>> getAdj() const; //used on graphviewer api
+	void setAdj(vector<Edge<T>> edges);
 	friend class Graph<T> ;
 	friend class MutablePriorityQueue<Vertex<T>> ;
 };
+
+template<class T>
+void Vertex<T>::setAdj(vector<Edge<T>> edges){
+	this->adj = edges;
+}
 
 template<class T>
 Vertex<T>::Vertex(T in) :
@@ -133,8 +139,22 @@ public:
 	vector<Vertex<T>*> getPath(const T &origin, const T &dest) const;
 	Vertex<T> * initSingleSource(const T &orig);
 	bool relax(Vertex<T> *v, Vertex<T> *w, double weight);
-	vector<Vertex<T>*>TSP(Vertex<T> *origin);
+	void removeEdge(int edgeId);
 };
+
+template<class T>
+void Graph<T>::removeEdge(int edgeId){
+	vector<Edge<T>> edges;
+	for(int j = 0; j < this->vertexSet.size(); j++){
+		edges = this->vertexSet.at(j)->getAdj();
+		for(int i = 0; i < edges.size(); i++){
+			if(edges.at(i).eId == edgeId){
+				edges.erase(edges.begin() +i);
+			}
+		}
+		this->vertexSet.at(j)->setAdj(edges);
+	}
+}
 
 template<class T>
 int Graph<T>::getNumVertex() const {
@@ -224,7 +244,7 @@ void Graph<T>::dfsVisit(Vertex<T> *v, vector<T> & res) const {
 	}
 }
 
-/****************** 2b) bfs ********************/
+/******************  bfs ********************/
 
 /*
  * Performs a breadth-first search (bfs) in a graph (this), starting
@@ -325,81 +345,6 @@ vector<Vertex<T>*> Graph<T>::getPath(const T &origin, const T &dest) const {
 	}
 	return res;
 }
-
-template<class T>
-vector<Vertex<T>*> Graph<T>::TSP(Vertex<T> *origin){
-	vector<Vertex<T>*> res;
-	vector<int> vertex_indexes;
-	cout<<"ola"<<endl;
-	//hamiltonian matrix
-	/**
-	 *quando uma edge é criada e lhe associado um indice por incremento a 0, esses indices vao ser usados para construir
-	 * a matriz do grafo.assim quando o algoritmo é processado gerando os varios indices por ordemdo caminho, sao feitos
-	 * os matches dos indices com o vertice respetivo e posteriormente desse vertice com as coordenadas do item
-	 *
-	 */
-	int nodes = vertexSet.size();
-	vector<double> v(nodes,0);
-	vector<vector <double>> matrix;
-
-	for(int i=0; i<nodes ;i++){
-		matrix.push_back(v);
-	}
-	for(int i=0; i<nodes ;i++){
-		for(auto e : vertexSet.at(i)->adj){
-			matrix[i][e.dest->index]=e.weight;
-		}
-	}
-	//TSP closest neighbour?
-
-
-	return res;
-}
-/**
- * match final com ciclo incrmental a uma variavel dado match ao vertice na posiçºao do vetor
- * hamiltoniana usa incide do vetor vrtice e nao id
- *
- * O(n!)nem pensar
- *  https://www.geeksforgeeks.org/traveling-salesman-problem-tsp-implementation/
- *
- *  https://www.sanfoundry.com/cpp-program-implement-nearest-neighbour-algorithm/
- *
- *  http://www.martinbroadhurst.com/nearest-neighbour-algorithm-for-tsp-in-c.html
- *
- *É ESTE!!! O(2^n*n)
- *  https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm
- *  https://www.quora.com/Are-there-any-good-examples-of-the-Held-Karp-algorithm-in-C++-Hard-to-find-example-code-to-solve-the-traveling-salesman-problem-Everyone-wants-to-just-talk-about-theory-and-not-show-how-to-actually-do-it-What-is-the-big-secret
- *
- *ACO
- * https://pt.wikipedia.org/wiki/Col%C3%B4nia_de_formigas_(otimiza%C3%A7%C3%A3o)
- */
-
-/**
- * TSP - IMPORTANTEEEEEE
- *o problema desrceve necessidade de percorrer todos os pontos de um grafo de modo a conseguir terminar
- * no inicio
- *
- * ou seja, o primeiro problema no nosso grafo  é o facto de ser dirigido, sendo assim nunca mas nunca se iria chegar
- * ao inicio
- *
- *  o algoritmo de closest neighbour consiste em:
- * 1 fixar um vertex origin
- *	2 pegar nesse vertexe olhar para todos os edges, selcionando o mais baixo
- *	3 avancar para esse edge, e marca o anteriro como visitado
- * 4 se todos foram visitados para se nao voltaa 2
- *
- * o meu erro de implementao deveu-se ao simples facto de se usar mos o grafoda figura,vamos marcar vertices como vistitados
- * e nunca poderemos chegar ao incio pois a ruas tipo "ramo de arvore" sao uma linha logo se ele a antigisse nunca ia voltar
- *  pq a unica aresta acessivel ia ter um  n vistidao
- *
- *  posto isot, a matrix q fiz para converter o grafo para usar ACO e merdas mais hardcore creio n ser necessario,
- * basta porntanto (criar um novo grafo n se, so para alocar)percorrer todos os vertices e por cada um cirar arestas com pesos
- *  feitos atraves das distancias coordendas xy, assim todos os pontos do seão conecatados uns aos outros e será possivel usar o algoritmo acima referido
- *
- *  nota que a funcao deverá retornar a lista de edges orndandas por vizinho mais proximo, portanto a cada avanco no ciclo alocar o vertice para q se avanca num vetor a ser retornado
- *
- *vou coloar uma imagem para q se perceba melhor
- */
 
 
 #endif
