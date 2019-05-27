@@ -15,7 +15,7 @@ void Company::init(string mapFolder, string truckFile, string itemFile){
 	this->main_map.setFolder(mapFolder);
 	this->main_map.loadMap();
 	//this->Trucks= loadTrucks(truckFile); //TODO uncomment
-	//this->items=loadItems(itemFile);
+	this->items=loadItems(itemFile);
 	//init origin
 	for(int i=0; i < (int)this->main_map.getGraph().getVertexSet().size();i++){
 			if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getTag() == "amenity=loading_dock"){
@@ -36,7 +36,7 @@ void Company::drawMap(){
  *  3#  multiple trucks multiple items
  *  4#  multiple trucks multiple items considering volumes and sizes
  */
-void Company::processRoute(){
+void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 	vector<Vertex<Coord>*> res;
 	for(unsigned int i=0; i < this->main_map.getGraph().getVertexSet().size();i++){
 		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getId() == 1109149480){
@@ -44,13 +44,6 @@ void Company::processRoute(){
 			break;
 		}
 	}
-
-	//TODO SELECIONAR O ALGORITMO A USAR
-	this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
-	cout<<"Processed dijkstra!\n";
-
-
-	res = this->main_map.getGraph().getPath(origin->getInfo(), this->extraction_points.at(0)->getInfo());
 
 		for( auto r : res ){
 			cout<< r->getInfo().getId()<<endl;
@@ -91,29 +84,38 @@ void Company::processRoute(){
 				}
 			}
 		gv->rearrange();
-		//process vertex
-		vector<Vertex<Coord>*>::iterator n;
-		for (n = res.begin(); n!= res.end(); n++)  {
-			gv->setVertexColor((*n)->getInfo().getId(),"green");
-			cout << "CCC";
-			for( unsigned int i = 0; i < (*n)->getAdj().size(); i++)
-			{
-				cout << "HELLO";
-				if(*next(n,1) != NULL)
+		unsigned int j = 0;
+		while( j < item_delivery.size())
 				{
-					if ((*next(n,1))->getInfo().getId() == (*n)->getAdj().at(i).getDest()->getInfo().getId())
-					{
-						if((*n)->getAdj().at(i).getDest()->getInfo().getId() == (*next(n,1))->getInfo().getId())
+					this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
+					cout<<"Processed dijkstra!\n";
+
+					res = this->main_map.getGraph().getPath(origin->getInfo(), item_delivery.at(j)->getInfo());
+					//process vertex
+					vector<Vertex<Coord>*>::iterator n;
+					for (n = res.begin(); n!= res.end(); n++)  {
+						gv->setVertexColor((*n)->getInfo().getId(),"green");
+						for( unsigned int i = 0; i < (*n)->getAdj().size(); i++)
 						{
-							gv->setEdgeColor((*n)->getAdj().at(i).eId, "blue");
-							gv->setEdgeThickness((*n)->getAdj().at(i).eId, 3);
-							cout << "HEY";
+							if(*next(n,1) != NULL)
+							{
+								if ((*next(n,1))->getInfo().getId() == (*n)->getAdj().at(i).getDest()->getInfo().getId())
+								{
+									if((*n)->getAdj().at(i).getDest()->getInfo().getId() == (*next(n,1))->getInfo().getId())
+									{
+										gv->setEdgeColor((*n)->getAdj().at(i).eId, "blue");
+										gv->setEdgeThickness((*n)->getAdj().at(i).eId, 3);}
+								}
+							}
 						}
+						gv->addNode((*n)->getInfo().getId(), (*n)->getInfo().getX() - minX,(*n)->getInfo().getY() - minY);
 					}
+					gv->setVertexColor(origin->getInfo().getId(), "yellow");
+					gv->setVertexLabel(origin->getInfo().getId(), "Hello");
+					origin = item_delivery.at(j);
+					j++;
 				}
-			}
-			gv->addNode((*n)->getInfo().getId(), (*n)->getInfo().getX() - minX,(*n)->getInfo().getY() - minY);
-		}
+
 		gv->rearrange();
 		for (auto n : this->main_map.getGraph().getVertexSet()) {
 						for (auto e : n->getAdj()) {
@@ -135,11 +137,18 @@ void Company::orderItems(){
 
 	for(auto v : this->main_map.getGraph().getVertexSet()){
 		for( auto i : items){
-			if(i.getLat()== v->getInfo().getLat() && i.getLon() == v->getInfo().getLon()){
+			if(i.getX()== v->getInfo().getX() && i.getY() == v->getInfo().getY()){
 				this->item_delivery.push_back(v);
 			}
 		}
 	}
+
+	for(unsigned int i=0; i < this->main_map.getGraph().getVertexSet().size();i++){
+			if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getId() == 1109149480){
+				origin = this->main_map.getGraph().getVertexSet().at(i);
+				break;
+			}
+		}
 	vector< pair<double,Vertex<Coord>*> > distances;
 	double distance;
 
@@ -165,6 +174,13 @@ void Company::orderItems(){
 			cout << p.second->getInfo().getId()<<endl;
 		}
 
+	item_delivery.clear();
+
+		vector< pair<double,Vertex<Coord>*> >::reverse_iterator it2;
+		for(it2 = distances.rbegin(); it2 !=distances.rend();it2++)
+		{
+			item_delivery.push_back((*it2).second);
+		}
 
 }
 void Company::blockStreet(){

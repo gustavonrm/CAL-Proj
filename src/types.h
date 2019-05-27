@@ -13,6 +13,7 @@
 #define ERR_OP_EDGES_FILE 3
 #define ERR_OP_TAGS_FILE 4
 #define ERR_OP_TRUCK_FILE 5
+#define ERR_OP_ITEM_FILE 6
 
 
 

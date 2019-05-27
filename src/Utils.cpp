@@ -36,22 +36,22 @@ vector<Item> loadItems(string itemFile){
 	file.open(itemFile);
 	if(file.is_open()){
 		while(getline(file,line)){
-			string lat,lon,w,v;
-			lat=line.substr(0,line.find(';'));
-			line.erase(0,line.find(';')+1);
-			lon=line.substr(0,line.find(';'));
-			line.erase(0,line.find(';')+1);
-			w=line.substr(0,line.find(';'));
-			line.erase(0,line.find(';')+1);
-			v=line.substr(0,line.find(';'));
-			line.clear();
-			pair<double,double> a(stod(lat),stod(lon));
-			Item i(a,stod(w),stod(v));
-			ret.push_back(i);
+					string x,y,w,v;
+					x=line.substr(0,line.find(';'));
+					line.erase(0,line.find(';')+1);
+					y=line.substr(0,line.find(';'));
+					line.erase(0,line.find(';')+1);
+					w=line.substr(0,line.find(';'));
+					line.erase(0,line.find(';')+1);
+					v=line.substr(0,line.find(';'));
+					line.clear();
+					pair<int,int> a(stoi(x),stoi(y));
+					Item i(a,stod(w),stod(v));
+					ret.push_back(i);
 		}
 	}else{
-		cout <<"Error opening truck file!\n";
-		exit(ERR_OP_TRUCK_FILE);
+		cout <<"Error opening Item file!\n";
+		exit(ERR_OP_ITEM_FILE);
 	}
 	return ret;
 }

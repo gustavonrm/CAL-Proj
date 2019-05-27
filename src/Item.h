@@ -16,14 +16,13 @@ using namespace std;
 
 class Item {
 private:
-	pair<double,double> adress;
+	pair<int,int> adress;
 	double weight;
 	double volume;
 public:
-	Item(pair<double,double> adress,double weight,double volume);
-	double getLat();
-	double getLon();
-
+	Item(pair<int,int> adress,double weight,double volume);
+	int getX();
+	int getY();
 };
 
 #endif /* ITEM_H_ */
