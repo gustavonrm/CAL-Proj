@@ -41,6 +41,7 @@ public:
 	void orderTrucks();
 	void blockStreet();
 	void addExtratingPoint();
+	Vertex<Coord>* findClosestExtractionPoint( Vertex<Coord>* origin);
 	void reset();
 };
 

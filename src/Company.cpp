@@ -72,14 +72,16 @@ void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 			break;
 		}
 	}
+	vector<Vertex<Coord>*>::const_iterator it = item_delivery.begin();
+	//item_delivery.insert(it,origin);
 
 		for( auto r : res ){
-			cout<< r->getInfo().getId()<<endl;
+			//cout<< r->getInfo().getId()<<endl;
 		}
 		//stuff
 		GraphViewer *gv = new GraphViewer(1920, 1080, false);
 		gv->createWindow(1920, 1080);
-		gv->defineVertexColor("black");
+		gv->defineVertexColor("LIGHT_GRAY");
 		gv->defineEdgeColor("red");
 		gv->defineEdgeCurved(false);
 		//make a translation
@@ -101,18 +103,31 @@ void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 					gv->setVertexLabel(n->getInfo().getId(),n->getInfo().getTag());
 					gv->setVertexColor(n->getInfo().getId(),"pink");
 				}
-			}
+					else {
+						gv->setVertexSize(n->getInfo().getId(),1);
+						gv->setVertexLabel(n->getInfo().getId(), " ");
+						}
+				}
+
 
 
 			for (auto n : this->main_map.getGraph().getVertexSet()) {
 				for (auto e : n->getAdj()) {
-					gv->setEdgeLabel(e.eId, to_string(e.eId));
+					//gv->setEdgeLabel(e.eId, to_string(e.eId));
 					gv->addEdge(e.eId, n->getInfo().getId(),
 							e.getDest()->getInfo().getId(), EdgeType::DIRECTED);
 				}
 			}
 		gv->rearrange();
+
 		unsigned int j = 0;
+		//Vertex<Coord>* final = item_delivery.back();
+		cout<<endl << item_delivery.size()<<endl;
+
+		item_delivery.push_back(findClosestExtractionPoint(item_delivery.back()));
+		cout<<endl << item_delivery.size()<<endl;
+		gv->setVertexColor(item_delivery.back()->getInfo().getId(), "yellow");
+		gv->rearrange();
 		while( j < item_delivery.size())
 				{
 					switch(algo){
@@ -137,6 +152,11 @@ void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 						break;
 					}
 
+					const int size = res.size();
+					if(size==0)
+						{	j++;
+							continue;
+						}
 					//process vertex
 					vector<Vertex<Coord>*>::iterator n;
 					for (n = res.begin(); n!= res.end(); n++)  {
@@ -151,16 +171,24 @@ void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 									{
 										gv->setEdgeColor((*n)->getAdj().at(i).eId, "blue");
 										gv->setEdgeThickness((*n)->getAdj().at(i).eId, 3);}
+										gv->rearrange();
+
 								}
 							}
 						}
-						gv->addNode((*n)->getInfo().getId(), (*n)->getInfo().getX() - minX,(*n)->getInfo().getY() - minY);
+						//gv->addNode((*n)->getInfo().getId(), (*n)->getInfo().getX() - minX,(*n)->getInfo().getY() - minY);
 					}
-					gv->setVertexColor(origin->getInfo().getId(), "yellow");
-					gv->setVertexLabel(origin->getInfo().getId(), "Hello");
+					gv->setVertexColor(origin->getInfo().getId(), "black");
+					gv->rearrange();
+
+					//gv->setVertexLabel(origin->getInfo().getId(), "Hello");
 					origin = item_delivery.at(j);
+					cout<<endl << item_delivery.size()<<endl;
+					cout << j << endl;
 					j++;
 				}
+
+
 
 		gv->rearrange();
 		for (auto n : this->main_map.getGraph().getVertexSet()) {
@@ -184,6 +212,7 @@ void Company::orderItems(){
 		for( auto i : items){
 			if(i.getX()== v->getInfo().getX() && i.getY() == v->getInfo().getY()){
 				this->item_delivery.push_back(v);
+				cout << v->getInfo().getId();
 			}
 		}
 	}
@@ -196,38 +225,65 @@ void Company::orderItems(){
 		}
 	vector< pair<double,Vertex<Coord>*> > distances;
 	double distance;
+	double deltaX, deltaY;
 
 	vector<Vertex<Coord>*>::iterator it;
 	for(it = item_delivery.begin(); it !=item_delivery.end();it++)
 	{
-		distance = 0;
-		res = this->main_map.getGraph().getPath(origin->getInfo(), (*it)->getInfo());
-		for(unsigned int j = 0; j < res.size(); j++)
-		{
-			distance += res[j]->getDist();
-		}
+		 deltaX = origin->getInfo().getX() - (*it)->getInfo().getX();
+		 deltaY = origin->getInfo().getY() - (*it)->getInfo().getY();
+		 distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+		 cout << endl << distance << endl;
+
 		distances.push_back(make_pair(distance, *it));
 	}
 	sort(distances.begin(), distances.end());
 
 	cout<<"Printing res\n";
 	for(auto p : item_delivery){
-		cout << p->getInfo().getId()<<endl;
+		cout << p->getInfo().getX()<<endl;
 	}
-	cout << endl << endl << "printing sorted";
+	cout << endl << endl << "printing sorted"<< endl;
 	for(auto p : distances){
-			cout << p.second->getInfo().getId()<<endl;
+			cout << p.second->getInfo().getX()<<endl;
 		}
 
 	item_delivery.clear();
 
-		vector< pair<double,Vertex<Coord>*> >::reverse_iterator it2;
-		for(it2 = distances.rbegin(); it2 !=distances.rend();it2++)
+		vector< pair<double,Vertex<Coord>*> >::iterator it2;
+		for(it2 = distances.begin(); it2 !=distances.end();it2++)
 		{
 			item_delivery.push_back((*it2).second);
 		}
+		cout<<endl << item_delivery.size()<<endl;
+}
+
+Vertex<Coord>* Company::findClosestExtractionPoint(Vertex<Coord>* origin)
+{
+	double deltaX, deltaY, distance, tempdistance;
+	Vertex<Coord>* closest;
+	for(unsigned int i = 0; i < extraction_points.size(); i++)
+	{
+		tempdistance = 0;
+		 deltaX = origin->getInfo().getX() - extraction_points[i]->getInfo().getX();
+		 deltaY = origin->getInfo().getY() - extraction_points[i]->getInfo().getY();
+		 tempdistance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+		 if(i == 0)
+			{
+				closest = extraction_points[i];
+				distance = tempdistance;
+			}
+		 if(tempdistance < distance)
+		 {
+			 closest = extraction_points[i];
+			 distance = tempdistance;
+		 }
+	}
+	cout << distance;
+	return closest;
 }
 //TODO n ta A DAR
+
 void Company::orderTrucks(){
 	unsigned index =0;
 	bool flag = true;
@@ -285,7 +341,7 @@ void Company::addExtratingPoint(){
 	int idnr;
 	cout<<"========Points available========\n";
 	for(auto v : this->main_map.getGraph().getVertexSet()){
-		if (!v->getInfo().getTag().empty()){
+		if (v->getInfo().getTag() =="amenity=loading_dock" ){
 			cout<< v->getInfo().getTag()<< " ID: "<<v->getInfo().getId()
 					<< " || Lat: "<<v->getInfo().getLat()<< "Lon: "<<v->getInfo().getLon()<<endl;
 		}
