@@ -35,6 +35,7 @@ public:
 	void addItem(Item item);
 	double getCurrentWeight();
 	double getCurrentVolume();
+	vector<Item> getItems();
 };
 
 #endif /* TRUCK_H_ */

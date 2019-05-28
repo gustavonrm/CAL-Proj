@@ -33,4 +33,8 @@ double Truck::getCurrentWeight(){
 double Truck::getCurrentVolume(){
 	return this->currentVolume;
 }
+vector<Item> Truck::getItems()
+{
+	return items;
+}
 
