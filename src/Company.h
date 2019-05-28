@@ -38,6 +38,7 @@ public:
 	void drawMap();
 	void processRoute();
 	void orderItems();
+	void orderTrucks();
 	void blockStreet();
 	void addExtratingPoint();
 	void reset();

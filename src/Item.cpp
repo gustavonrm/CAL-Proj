@@ -20,4 +20,9 @@ int Item::getX(){
 int Item::getY(){
 	return this->adress.second;
 }
-
+double Item::getWeight(){
+	return this->weight;
+}
+double Item::getVolume(){
+	return this->volume;
+}

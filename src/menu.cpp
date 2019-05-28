@@ -20,6 +20,7 @@ bool Menu::menuManip() {
 		switch (this->option) {
 		case 0:
 			this->company.orderItems();
+			this->company.orderTrucks();
 			this->company.processRoute();
 			//this->company.drawMap();
 

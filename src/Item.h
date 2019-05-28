@@ -23,6 +23,8 @@ public:
 	Item(pair<int,int> adress,double weight,double volume);
 	int getX();
 	int getY();
+	double getWeight();
+	double getVolume();
 };
 
 #endif /* ITEM_H_ */

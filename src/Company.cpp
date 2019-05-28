@@ -14,7 +14,7 @@ Company::Company(){
 void Company::init(string mapFolder, string truckFile, string itemFile){
 	this->main_map.setFolder(mapFolder);
 	this->main_map.loadMap();
-	//this->Trucks= loadTrucks(truckFile); //TODO uncomment
+	this->Trucks= loadTrucks(truckFile);
 	this->items=loadItems(itemFile);
 	//init origin
 	for(int i=0; i < (int)this->main_map.getGraph().getVertexSet().size();i++){
@@ -22,6 +22,11 @@ void Company::init(string mapFolder, string truckFile, string itemFile){
 				break;
 			}
 		}
+		if( this->main_map.getGraph().isDAG()){
+			cout<<"\nThis graph is Directed and acyclic!\n";
+		}else
+			cout<<"\nThis graph is not Directed and acyclic!\n";
+
 }
 void Company::setMainMap(Map main_map){
 	this->main_map=main_map;
@@ -37,6 +42,29 @@ void Company::drawMap(){
  *  4#  multiple trucks multiple items considering volumes and sizes
  */
 void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
+
+	if(this->extraction_points.empty()){
+		cout<<"Can't process a route without extraction points!\n";
+		return;
+	}
+
+
+	int algo =0;
+	cout << "Select an algorithm to use:\n";
+	cout << "1 - Dijkstra\n";
+	cout << "2 - Bidirectional Dijkstra\n";
+	cout << "3 - A * \n";
+	while(true){
+		cout<< " -> ";
+		cin>> algo;
+		cout<< algo;
+		if(algo > 1 || algo < 3){
+			break;
+		}
+		cout<< algo;
+	}
+	cout << "Started processing...";
+
 	vector<Vertex<Coord>*> res;
 	for(unsigned int i=0; i < this->main_map.getGraph().getVertexSet().size();i++){
 		if(this->main_map.getGraph().getVertexSet().at(i)->getInfo().getId() == 1109149480){
@@ -87,10 +115,28 @@ void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 		unsigned int j = 0;
 		while( j < item_delivery.size())
 				{
-					this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
-					cout<<"Processed dijkstra!\n";
+					switch(algo){
+					case 1:
+						this->main_map.getGraph().dijkstraShortestPath(origin->getInfo());
+						cout<<"Processed dijkstra!\n";
+						res = this->main_map.getGraph().getPath(origin->getInfo(), item_delivery.at(j)->getInfo());
+						break;
+					case 2:
+					{
+						this->main_map.getGraph().dijkstraBidirectionalPath(origin->getInfo(),item_delivery.at(j)->getInfo());
+						cout<<"Processed bidirectional dijkstra!\n";
+						vector<Vertex<Coord>*> res1;
+						res = this->main_map.getGraph().getPath1(origin->getInfo(), item_delivery.at(j)->getInfo());
+						res1 = this->main_map.getGraph().getPath1(origin->getInfo(), item_delivery.at(j)->getInfo());
+						res.insert(res.end(),res1.begin(),res1.end());
+						break;
+					}
+					case 3:
+						cout<<"not implemented\n";
+						return;
+						break;
+					}
 
-					res = this->main_map.getGraph().getPath(origin->getInfo(), item_delivery.at(j)->getInfo());
 					//process vertex
 					vector<Vertex<Coord>*>::iterator n;
 					for (n = res.begin(); n!= res.end(); n++)  {
@@ -129,7 +175,6 @@ void Company::processRoute(){ //TODO SELECIONAR O ALGORITMO A USA
 		gv->rearrange();
 		cout << "Succefully drawn!\n";
 		getchar();
-
 
 }
 void Company::orderItems(){
@@ -181,7 +226,41 @@ void Company::orderItems(){
 		{
 			item_delivery.push_back((*it2).second);
 		}
-
+}
+//TODO n ta A DAR
+void Company::orderTrucks(){
+	unsigned index =0;
+	bool flag = true;
+	for (auto t : this->Trucks){
+		if(index > item_delivery.size())
+			break;
+		flag=true;
+		vector<Vertex<Coord>*> truck_item_delivery;
+		while(flag){
+		auto id  = item_delivery[index];
+			for(auto i : items){
+				if(i.getX()==id->getInfo().getX() && i.getY()==id->getInfo().getY() ){
+					if(i.getWeight() < t.getCurrentWeight() && i.getVolume() < t.getCurrentVolume()){
+						cout<<"\nxD\n";
+						t.addItem(i);
+						truck_item_delivery.push_back(id);
+						index++;
+					}else{
+						flag = false;
+						break;
+					}
+				}
+			}
+		}
+		t.setItemDelivery(truck_item_delivery);
+		truck_item_delivery.clear();
+	}
+	for(auto t : this->Trucks){
+		cout<<"ola\n";
+		for(auto i : t.getItemDelivery()){
+			cout<<" :: " <<i->getInfo().getX();
+		}
+	}
 }
 void Company::blockStreet(){
 		int id;
