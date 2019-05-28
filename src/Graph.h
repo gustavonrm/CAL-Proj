@@ -42,6 +42,7 @@ class Vertex {
 	double dist = 0;
 	double dist1 = 0; //used in bidirectional
 	double dist2 = 0;
+	double distance = 0; // used to sort by distance
 	Vertex<T> *path = NULL;
 	Vertex<T> *path1 = NULL; //used in bidirectional
 	Vertex<T> *path2 = NULL;
@@ -56,6 +57,7 @@ public:
 	bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
 	T getInfo() const;
 	double getDist() const;
+	double getDistance() const;
 	Vertex *getPath() const;
 	Vertex *getPath1() const;
 	Vertex *getPath2() const;
@@ -102,6 +104,11 @@ template<class T>
 double Vertex<T>::getDist() const {
 	return this->dist;
 }
+template<class T>
+double Vertex<T>::getDistance() const {
+	return this->distance;
+}
+
 
 template<class T>
 Vertex<T> *Vertex<T>::getPath() const {
@@ -370,13 +377,17 @@ vector<Vertex<T>*> Graph<T>::getPath(const T &origin, const T &dest) const {
 	auto v = findVertex(dest);
 	if (v == nullptr || v->dist == INF) { // missing or disconnected
 		cout<<"missing or disconnected\n";
+		res.clear();
 		return res;
 	}
 	for (; v != nullptr; v = v->path)
+	{
+		v->distance = v->dist;
 		res.push_back(v);
+	}
 	reverse(res.begin(), res.end());
 	for (auto r : res) {
-		cout << r->getInfo().getId() << endl;
+
 	}
 	return res;
 }

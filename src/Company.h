@@ -51,6 +51,7 @@ public:
 	//self explanatory
 	void addExtratingPoint();
 	//relload everything deleting routes blocked andextraction points
+	Vertex<Coord>* findClosestExtractionPoint( Vertex<Coord>* origin);
 	void reset();
 };
 
