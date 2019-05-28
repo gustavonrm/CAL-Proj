@@ -5,6 +5,8 @@
  *      Author: gustavo
  */
 
+//some errors define, this more like C
+
 #ifndef TYPES_H_
 #define TYPES_H_
 

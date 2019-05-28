@@ -12,7 +12,10 @@
 #include<string>
 
 using namespace std;
-
+/**
+ * Class used in graph construction,used to save every coordenate type id and tags read form the files
+ *basically a map is a graph of Coord objects
+ */
 class Coord {
 private:
 	int id;
@@ -38,6 +41,7 @@ public:
 	void setY(int y);
 	void setTag(string tag);
 
+	//operator used in graph algorithms
 	bool operator == (const Coord &c) const;
 
 };

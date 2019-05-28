@@ -15,10 +15,14 @@ Truck::Truck(double maxWeight,double maxVolume){
 }
 void Truck::setItemDelivery(	vector<Vertex<Coord>*> item_delivery)
 {
-	this->item_delivery=item_delivery;
+	this->item_delivery.insert(this->item_delivery.begin(),item_delivery.begin(),item_delivery.end());
 }
 vector<Vertex<Coord>*> Truck::getItemDelivery(){
 	return this->item_delivery;
+}
+void Truck::addTruckItemDelivery(Vertex<Coord>*item_delivery){
+
+	this->item_delivery.push_back(item_delivery); //TODO PUSH BACK NOT WORKING DONT KNOW WHY
 }
 
 void Truck::addItem(Item item){

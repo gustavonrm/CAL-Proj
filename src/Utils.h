@@ -21,7 +21,9 @@
 
 using namespace std;
 
+//load truck files
 vector<Truck> loadTrucks(string truckFile);
+//load item files
 vector<Item> loadItems(string itemFile);
 
 #endif /* UTILS_H_ */

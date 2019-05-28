@@ -21,6 +21,13 @@ template<class T> class Vertex;
 
 #define INF std::numeric_limits<double>::max()
 
+/**
+ *Class adapted from pratical classes, with some methods added,
+ *Class algorithms used were also adapted in exception to some, explained in further detail on doc
+ *
+ *
+ */
+
 /************************* Vertex  **************************/
 
 template<class T>
@@ -50,6 +57,8 @@ public:
 	T getInfo() const;
 	double getDist() const;
 	Vertex *getPath() const;
+	Vertex *getPath1() const;
+	Vertex *getPath2() const;
 	vector<Edge<T>> getAdj() const; //used on graphviewer api
 	void setAdj(vector<Edge<T>> edges);
 	friend class Graph<T> ;
@@ -96,6 +105,14 @@ double Vertex<T>::getDist() const {
 
 template<class T>
 Vertex<T> *Vertex<T>::getPath() const {
+	return this->path;
+}
+template<class T>
+Vertex<T> *Vertex<T>::getPath1() const {
+	return this->path;
+}
+template<class T>
+Vertex<T> *Vertex<T>::getPath2() const {
 	return this->path;
 }
 template<class T>

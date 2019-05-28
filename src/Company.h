@@ -32,15 +32,25 @@ private:
 	Vertex<Coord> *origin;
 public:
 	Company();
+	//load company assets
 	void init(string mapFolder, string truckFile, string itemFile);
+	//set main graph to use
 	void setMainMap(Map main_map);
+	//read map
 	void processMap();
+	//draw map utility using graph viewr, mainly used to debug
 	void drawMap();
+	//process route usingshortestpath algorithms
 	void processRoute();
+	//oder items
 	void orderItems();
+	//distributeitemsto trucks
 	void orderTrucks();
+	//delete graph edges
 	void blockStreet();
+	//self explanatory
 	void addExtratingPoint();
+	//relload everything deleting routes blocked andextraction points
 	void reset();
 };
 

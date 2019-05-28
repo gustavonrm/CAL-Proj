@@ -23,10 +23,14 @@ private:
 	Company company;
 public:
 	Menu();
+	//menu cicle and manipulation calling company methods
 	bool menuManip();
+	//output
 	void drawMainMenu();
+	//files handler
 	void readFiles();
 	void loadFiles();
+	//input handler
 	void readInput();
 
 };

@@ -36,12 +36,17 @@ public:
 	void setFolder(string folder);
 	void setGraph(Graph<Coord> graph);
 	Graph<Coord>  getGraph();
+	//used all methods below to load the map
 	void loadMap();
+	/*
+	 * series of methods to load all files
+	 */
 	void processFiles();
 	void processNodes();
 	void processEdges();
 	void processTags();
 	void processGraph();
+	//gv apiused to debug
 	void drawGraph();
 	//debug coise
 	void printGraph();
